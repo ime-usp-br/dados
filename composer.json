@@ -10,7 +10,7 @@
         "laravel/framework": "^10.10",
         "laravel/sanctum": "^3.3",
         "laravel/tinker": "^2.8",
-        "uspdev/laravel-usp-theme": "^2.8",
+        "uspdev/laravel-usp-theme": "dev-master",
         "uspdev/replicado": "^1.19",
         "uspdev/senhaunica-socialite": "^4.3"
     },
@@ -66,5 +66,11 @@
         }
     },
     "minimum-stability": "stable",
-    "prefer-stable": true
+    "prefer-stable": true,
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/ayrtonnotrya/laravel-usp-theme.git"
+        }
+    ]
 }
