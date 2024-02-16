@@ -2,62 +2,47 @@
 
 $admin = [
     [
-        'text' => '<i class="fas fa-atom"></i>  SubItem 1',
+        'text' => 'Reservado',
+        'url' => 'subitem1',
+        'can' => 'admin',
+    ],
+];
+
+$submenu2 = [
+    [
+        'type' => 'header',
+        'text' => 'Atividade Discente',
+    ],
+    [
+        'text' => 'Estabilidade',
         'url' => 'subitem1',
     ],
     [
-        'text' => 'SubItem 2',
-        'url' => '/subitem2',
-        'can' => 'admin',
+        'text' => 'Ingressantes',
+        'url' => 'subitem1',
     ],
     [
         'type' => 'divider',
     ],
     [
         'type' => 'header',
-        'text' => 'Cabeçalho',
+        'text' => 'Atividade Docente',
     ],
     [
-        'text' => 'SubItem 3',
-        'url' => 'subitem3',
-    ],
-];
-
-$submenu2 = [
-    [
-        'text' => 'SubItem 1',
-        'url' => 'subitem1',
-    ],
-    [
-        'text' => 'SubItem 2',
+        'text' => 'Carga Didática',
         'url' => 'subitem2',
-        'can' => 'admin',
     ],
 ];
 
 $menu = [
     [
-        'text' => '<i class="fas fa-home"></i> Home',
-        'url' => 'home',
-    ],
-    [
         # este item de menu será substituido no momento da renderização
         'key' => 'menu_dinamico',
     ],
     [
-        'text' => 'Drop Down',
+        'text' => 'Relatórios',
         'submenu' => $submenu2,
-        'can' => '',
-    ],
-    [
-        'text' => 'Está logado',
-        'url' => config('app.url') . '/logado', // com caminho absoluto
         'can' => 'user',
-    ],
-    [
-        'text' => 'Menu gerente',
-        'url' => 'gerente',
-        'can' => 'gerente',
     ],
     [
         'text' => 'Menu admin',
@@ -73,13 +58,6 @@ $right_menu = [
     ],
     [
         'key' => 'laravel-tools',
-    ],
-    [
-        'text' => '<i class="fas fa-cog"></i>',
-        'title' => 'Configurações',
-        'target' => '_blank',
-        'url' => config('app.url') . '/item1',
-        'align' => 'right',
     ],
 ];
 
