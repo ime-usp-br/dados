@@ -9,58 +9,113 @@
         <div class="col-md-12">
             <h1 class='text-center'>Relatório Carga Didática dos Docentes do {{$departamento}}</h1>
             <h1 class='text-center mb-5'>{{$semestre}}° semestre de {{$ano}}</h1>
-
             @if (count($dados) > 0)
-                @foreach($dados as $codpes=>$docente)
-                
-                <h4 class='text-center mt-5'>{{$docente["nompes"]}} ({{$codpes}}) </h1>
-                <table id="table_id" class="table table-bordered" style="font-size:12px;">
-                    <thead>
-                        <tr>
-                            <th class="text-center" rowspan="2" style="vertical-align: middle;">Sigla da Disciplina</th>
-                            <th class="text-center" rowspan="2" style="vertical-align: middle;">Nome da Disciplina</th>
-                            <th class="text-center" colspan="2" style="vertical-align: middle;">Carga horária</th>
-                            <th class="text-center" rowspan="2" style="vertical-align: middle;">Nível</th>
-                            <th class="text-center" rowspan="2" style="vertical-align: middle;">Inicio</th>
-                            <th class="text-center" rowspan="2" style="vertical-align: middle;">Fim</th>
-                            <th class="text-center" rowspan="2" style="vertical-align: middle;">Turma</th>
-                            <th class="text-center" rowspan="2" style="vertical-align: middle;">Alunos matriculados</th>
-                            <th class="text-center" rowspan="2" style="vertical-align: middle;">Horário</th>
-                        </tr>
-                        <tr class="text-center">
-                            <th>Teórica</th>
-                            <th>Prática</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach($docente["disciplinas"] as $coddis=>$disciplina)
-                            <tr>
-                                <?php $primeiraTurma = true;?>
-                                <td class="text-center" rowspan="{{ count($disciplina['turmas']) }}" style="vertical-align: middle;">{{ $coddis }}</td>
-                                <td class="text-center" rowspan="{{ count($disciplina['turmas']) }}" style="vertical-align: middle;width:500px;">{{ $disciplina["nomdis"] }}</td>
-                                <td class="text-center" rowspan="{{ count($disciplina['turmas']) }}" style="vertical-align: middle;">{{ $disciplina["creaul"] }}</td>
-                                <td class="text-center" rowspan="{{ count($disciplina['turmas']) }}" style="vertical-align: middle;">{{ $disciplina["cretrb"] }}</td>
-                                <td class="text-center" rowspan="{{ count($disciplina['turmas']) }}" style="vertical-align: middle;">{{ $disciplina["nivel"] }}</td>
-                                <td class="text-center" rowspan="{{ count($disciplina['turmas']) }}" style="vertical-align: middle;">{{ $disciplina["dtainiaul"] }}</td>
-                                <td class="text-center" rowspan="{{ count($disciplina['turmas']) }}" style="vertical-align: middle;">{{ $disciplina["dtafimaul"] }}</td>
-                                @foreach($disciplina['turmas'] as $codtur=>$turma)
-                                    @if(!$primeiraTurma)
-                                        <tr>
-                                    @endif
-                                        <td class="text-center" style="vertical-align: middle;">{{ $codtur }}</td>
-                                        <td class="text-center" style="vertical-align: middle;">{{ $turma["nummtr"] }}</td>
+                @foreach($dados as $docente=>$dado)                    
+                    <h4 class='text-center mt-5'>{{$docente}} </h1>
+                    <?php 
+                        $disciplinasGraduacao = array_filter($dado["disciplinas"], function($var){
+                            return $var["nivel"] == "Graduação";
+                        });
+                    ?>
+                    @if(count($disciplinasGraduacao) > 0)
+                        <table id="table_id" class="table table-bordered" style="font-size:12px;">
+                            <thead>
+                                <tr class="text-center">
+                                    <th colspan="10">Graduação</th>
+                                </tr>
+                                <tr>
+                                    <th class="text-center" rowspan="2" style="vertical-align: middle;">Sigla da Disciplina</th>
+                                    <th class="text-center" rowspan="2" style="vertical-align: middle;">Nome da Disciplina</th>
+                                    <th class="text-center" colspan="2" style="vertical-align: middle;">Carga horária</th>
+                                    <th class="text-center" rowspan="2" style="vertical-align: middle;">Inicio</th>
+                                    <th class="text-center" rowspan="2" style="vertical-align: middle;">Fim</th>
+                                    <th class="text-center" rowspan="2" style="vertical-align: middle;">Turma</th>
+                                    <th class="text-center" rowspan="2" style="vertical-align: middle;">Alunos matriculados</th>
+                                    <th class="text-center" rowspan="2" style="vertical-align: middle;">Horário</th>
+                                </tr>
+                                <tr class="text-center">
+                                    <th>Teórica</th>
+                                    <th>Trabalho</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach($disciplinasGraduacao as $coddis=>$disciplina)
+                                    <tr>
+                                        <?php $primeiraTurma = true;?>
+                                        <td class="text-center" rowspan="{{ count($disciplina['turmas']) }}" style="vertical-align: middle;">{{ $coddis }}</td>
+                                        <td class="text-center" rowspan="{{ count($disciplina['turmas']) }}" style="vertical-align: middle;width:500px;">{{ $disciplina["nomdis"] }}</td>
+                                        <td class="text-center" rowspan="{{ count($disciplina['turmas']) }}" style="vertical-align: middle;">{{ $disciplina["creaul"] }}</td>
+                                        <td class="text-center" rowspan="{{ count($disciplina['turmas']) }}" style="vertical-align: middle;">{{ $disciplina["cretrb"] }}</td>
+                                        <td class="text-center" rowspan="{{ count($disciplina['turmas']) }}" style="vertical-align: middle;">{{ $disciplina["dtainiaul"] }}</td>
+                                        <td class="text-center" rowspan="{{ count($disciplina['turmas']) }}" style="vertical-align: middle;">{{ $disciplina["dtafimaul"] }}</td>
+                                        @foreach($disciplina['turmas'] as $codtur=>$turma)
+                                            @if(!$primeiraTurma)
+                                                <tr>
+                                            @endif
+                                                <td class="text-center" style="vertical-align: middle;">{{ $codtur }}</td>
+                                                <td class="text-center" style="vertical-align: middle;">{{ $turma["nummtr"] }}</td>
+                                                <td class="text-center" style="vertical-align: middle;">
+                                                    @foreach($turma["horarios"] as $horario)
+                                                        {{ $horario["diasmnocp"]." ".$horario["horent"]." ".$horario["horsai"] }}<br>
+                                                    @endforeach
+                                                </td>
+                                            </tr>
+                                            <?php $primeiraTurma = false;?>
+                                        @endforeach
+                                @endforeach
+                            </tbody>
+                        </table>
+                    @endif
+                    <?php 
+                        $disciplinasPos = array_filter($dado["disciplinas"], function($var){
+                            return $var["nivel"] == "Pós Graduação";
+                        });
+                    ?>
+                    @if(count($disciplinasPos) > 0)
+                        <table id="table_id" class="table table-bordered" style="font-size:12px;">
+                            <thead>
+                                <tr class="text-center">
+                                    <th colspan="10">Pós Graduação</th>
+                                </tr>
+                                <tr>
+                                    <th class="text-center" rowspan="2" style="vertical-align: middle;">Sigla da Disciplina</th>
+                                    <th class="text-center" rowspan="2" style="vertical-align: middle;">Nome da Disciplina</th>
+                                    <th class="text-center" colspan="3" style="vertical-align: middle;">Carga horária</th>
+                                    <th class="text-center" rowspan="2" style="vertical-align: middle;">Créditos</th>
+                                    <th class="text-center" rowspan="2" style="vertical-align: middle;">Inicio</th>
+                                    <th class="text-center" rowspan="2" style="vertical-align: middle;">Fim</th>
+                                    <th class="text-center" rowspan="2" style="vertical-align: middle;">Alunos matriculados</th>
+                                    <th class="text-center" rowspan="2" style="vertical-align: middle;">Horário</th>
+                                </tr>
+                                <tr class="text-center">
+                                    <th>Teórica</th>
+                                    <th>Prática</th>
+                                    <th>Estudos</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach($disciplinasPos as $coddis=>$disciplina)
+                                    <tr>
+                                        <?php $primeiraTurma = true;?>
+                                        <td class="text-center" style="vertical-align: middle;">{{ $coddis }}</td>
+                                        <td class="text-center" style="vertical-align: middle;width:500px;">{{ $disciplina["nomdis"] }}</td>
+                                        <td class="text-center" style="vertical-align: middle;">{{ $disciplina["cgahorteodis"] }}</td>
+                                        <td class="text-center" style="vertical-align: middle;">{{ $disciplina["cgahorpradis"] }}</td>
+                                        <td class="text-center" style="vertical-align: middle;">{{ $disciplina["cgahoresddis"] }}</td>
+                                        <td class="text-center" style="vertical-align: middle;">{{ $disciplina["numcretotdis"] }}</td>
+                                        <td class="text-center" style="vertical-align: middle;">{{ $disciplina["dtainiaul"] }}</td>
+                                        <td class="text-center" style="vertical-align: middle;">{{ $disciplina["dtafimaul"] }}</td>
+                                        <td class="text-center" style="vertical-align: middle;">{{ $disciplina["nummtr"] }}</td>
                                         <td class="text-center" style="vertical-align: middle;">
-                                            @foreach($turma["horarios"] as $horario)
+                                            @foreach($disciplina["horarios"] as $horario)
                                                 {{ $horario["diasmnocp"]." ".$horario["horent"]." ".$horario["horsai"] }}<br>
                                             @endforeach
                                         </td>
                                     </tr>
-                                    <?php $primeiraTurma = false;?>
                                 @endforeach
-                        @endforeach
-                    </tbody>
-                </table>
-
+                            </tbody>
+                        </table>
+                    @endif
                 @endforeach
             @endif
         </div>
