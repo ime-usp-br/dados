@@ -11,26 +11,11 @@ $admin = [
 $submenu2 = [
     [
         'type' => 'header',
-        'text' => 'Atividade Discente',
-    ],
-    [
-        'text' => 'Estabilidade',
-        'url' => 'subitem1',
-    ],
-    [
-        'text' => 'Ingressantes',
-        'url' => 'subitem1',
-    ],
-    [
-        'type' => 'divider',
-    ],
-    [
-        'type' => 'header',
         'text' => 'Atividade Docente',
     ],
     [
         'text' => 'Carga Didática',
-        'url' => 'subitem2',
+        'url' => 'relatorios/cargadidatica',
     ],
 ];
 
@@ -45,7 +30,7 @@ $menu = [
         'can' => 'user',
     ],
     [
-        'text' => 'Menu admin',
+        'text' => 'Administrador',
         'submenu' => $admin,
         'can' => 'admin',
     ],

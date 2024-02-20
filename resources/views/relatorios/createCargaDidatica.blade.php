@@ -1,0 +1,18 @@
+@extends('main')
+
+@section('title', 'Relatório Carga Didática Docente')
+
+@section('content')
+@parent
+<div id="layout_conteudo">
+    <div class="justify-content-center">
+        <div class="col-md-12">
+            <h1 class='text-center mb-5'>Relatório Carga Didática Docente</h1>
+
+            <form method="GET" action="{{ route('relatorios.cargaDidatica') }}" enctype='multipart/form-data'>
+                @include('relatorios.partials.formCargaDidatica')
+            </form>
+        </div>
+    </div>
+</div>
+@endsection

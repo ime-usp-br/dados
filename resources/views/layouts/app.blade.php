@@ -6,9 +6,7 @@
 
 @section('styles')
   @parent
-  <style>
-    /*seus estilos*/
-  </style>
+    <link rel="stylesheet" href="{{ asset('css/app.css') }}" />
 @endsection
 
 @section('javascripts_bottom')
