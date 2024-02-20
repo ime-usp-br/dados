@@ -113,6 +113,27 @@ class RelatoriosController extends Controller
             $dados = array_merge_recursive($dadosGraduação, $dadosPos);
 
             ksort($dados);
+
+            $dias = ["seg"=>1,"ter"=>2,"qua"=>3,"qui"=>4,"sex"=>5,"sab"=>6];
+            foreach($dados as $key=>$values){
+                foreach($dados[$key]["disciplinas"] as $key2=>$values2){
+                    if($dados[$key]["disciplinas"][$key2]["nivel"] == "Graduação"){
+                        foreach($dados[$key]["disciplinas"][$key2]["turmas"] as $key3=>$values3){
+                            $horarios = $dados[$key]["disciplinas"][$key2]["turmas"][$key3]["horarios"];
+                            usort($horarios, function($a,$b)use($dias){
+                                return $dias[$a["diasmnocp"]] <=> $dias[$b["diasmnocp"]];
+                            });
+                            $dados[$key]["disciplinas"][$key2]["turmas"][$key3]["horarios"] = $horarios;
+                        }
+                    }elseif($dados[$key]["disciplinas"][$key2]["nivel"] == "Pós Graduação"){
+                        $horarios = $dados[$key]["disciplinas"][$key2]["horarios"];
+                        usort($horarios, function($a,$b)use($dias){
+                            return $dias[$a["diasmnocp"]] <=> $dias[$b["diasmnocp"]];
+                        });
+                        $dados[$key]["disciplinas"][$key2]["horarios"] = $horarios;
+                    }
+                }
+            }
             
             return view("relatorios.cargaDidatica", compact([
                 "dados",
