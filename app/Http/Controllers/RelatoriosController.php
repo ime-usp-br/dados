@@ -18,7 +18,7 @@ class RelatoriosController extends Controller
         
         if(isset($validated["departamento"]) and isset($validated["ano"]) and isset($validated["semestre"])){
             $codigoSetores = ["MAC"=>1664, "MAE"=>1665, "MAP"=>1666, "MAT"=>1667];
-            $query = " select distinct P.nompes, V.codpes, M.coddis, D.nomdis, M.codtur, M.dtainiaul, M.dtafimaul, D.creaul, D.cretrb, (T.nummtr+T.nummtrturcpl+T.nummtropt+T.nummtrecr) as nummtr,M.diasmnocp, H.horent, H.horsai";
+            $query = " select distinct P.nompes, V.codpes, M.coddis, D.nomdis, M.codtur, FORMAT(M.dtainiaul, 'dd/MM/yyyy') as dtainiaul, FORMAT(M.dtafimaul, 'dd/MM/yyyy') as dtafimaul, D.creaul, D.cretrb, (T.nummtr+T.nummtrturcpl+T.nummtropt+T.nummtrecr) as nummtr,M.diasmnocp, H.horent, H.horsai";
             $query .= " from VINCULOPESSOAUSP as V, PESSOA as P, MINISTRANTE as M, DISCIPLINAGR as D, TURMAGR as T, PERIODOHORARIO as H";
             $query .= " where V.codund = :codund";
             $query .= " and V.codset = :codset";
@@ -46,8 +46,8 @@ class RelatoriosController extends Controller
                 $dadosGraduação[$resposta["nompes"]." (".$resposta["codpes"].")"]["disciplinas"][$resposta["coddis"]]["nivel"] = "Graduação";
                 $dadosGraduação[$resposta["nompes"]." (".$resposta["codpes"].")"]["disciplinas"][$resposta["coddis"]]["creaul"] = $resposta["creaul"];
                 $dadosGraduação[$resposta["nompes"]." (".$resposta["codpes"].")"]["disciplinas"][$resposta["coddis"]]["cretrb"] = $resposta["cretrb"];
-                $dadosGraduação[$resposta["nompes"]." (".$resposta["codpes"].")"]["disciplinas"][$resposta["coddis"]]["dtainiaul"] = explode(" ",$resposta["dtainiaul"])[0];
-                $dadosGraduação[$resposta["nompes"]." (".$resposta["codpes"].")"]["disciplinas"][$resposta["coddis"]]["dtafimaul"] = explode(" ",$resposta["dtafimaul"])[0];
+                $dadosGraduação[$resposta["nompes"]." (".$resposta["codpes"].")"]["disciplinas"][$resposta["coddis"]]["dtainiaul"] = $resposta["dtainiaul"];
+                $dadosGraduação[$resposta["nompes"]." (".$resposta["codpes"].")"]["disciplinas"][$resposta["coddis"]]["dtafimaul"] = $resposta["dtafimaul"];
                 $dadosGraduação[$resposta["nompes"]." (".$resposta["codpes"].")"]["disciplinas"][$resposta["coddis"]]["turmas"][$resposta["codtur"]]["nummtr"] = $resposta["nummtr"];
                 $dadosGraduação[$resposta["nompes"]." (".$resposta["codpes"].")"]["disciplinas"][$resposta["coddis"]]["turmas"][$resposta["codtur"]]["horarios"][] = [
                     "diasmnocp"=>$resposta["diasmnocp"],
@@ -56,7 +56,7 @@ class RelatoriosController extends Controller
                 ];
             }
 
-            $query = " select P.nompes, VP.codpes, R32.sgldis as coddis, D.nomdis, O.dtainiofe as dtainiaul, O.dtafimofe as dtafimaul, D.cgahorteodis, D.cgahorpradis, D.cgahoresddis, D.cgahordis, D.numcretotdis, ET.diasmnofe as diasmnocp, ET.horiniofe as horent, ET.horfimofe as horsai, count(*) as nummtr";
+            $query = " select P.nompes, VP.codpes, R32.sgldis as coddis, D.nomdis, FORMAT(O.dtainiofe, 'dd/MM/yyyy') as dtainiaul, FORMAT(O.dtafimofe, 'dd/MM/yyyy') as dtafimaul, D.cgahorteodis, D.cgahorpradis, D.cgahoresddis, D.cgahordis, D.numcretotdis, ET.diasmnofe as diasmnocp, ET.horiniofe as horent, ET.horfimofe as horsai, count(*) as nummtr";
             $query .= " from VINCULOPESSOAUSP as VP, PESSOA as P, DISCIPLINA as D, R32TURMINDOC as R32, OFERECIMENTO as O, R41PGMMATTUR as R41, ESPACOTURMA as ET";
             $query .= " where VP.codund = :codund";
             $query .= " and VP.tipfnc = 'Docente'";
@@ -97,8 +97,8 @@ class RelatoriosController extends Controller
                 $dadosPos[$resposta["nompes"]." (".$resposta["codpes"].")"]["disciplinas"][$resposta["coddis"]]["cgahoresddis"] = $resposta["cgahoresddis"];
                 $dadosPos[$resposta["nompes"]." (".$resposta["codpes"].")"]["disciplinas"][$resposta["coddis"]]["cgahordis"] = $resposta["cgahordis"];
                 $dadosPos[$resposta["nompes"]." (".$resposta["codpes"].")"]["disciplinas"][$resposta["coddis"]]["numcretotdis"] = $resposta["numcretotdis"];
-                $dadosPos[$resposta["nompes"]." (".$resposta["codpes"].")"]["disciplinas"][$resposta["coddis"]]["dtainiaul"] = explode(" ",$resposta["dtainiaul"])[0];
-                $dadosPos[$resposta["nompes"]." (".$resposta["codpes"].")"]["disciplinas"][$resposta["coddis"]]["dtafimaul"] = explode(" ",$resposta["dtafimaul"])[0];
+                $dadosPos[$resposta["nompes"]." (".$resposta["codpes"].")"]["disciplinas"][$resposta["coddis"]]["dtainiaul"] = $resposta["dtainiaul"];
+                $dadosPos[$resposta["nompes"]." (".$resposta["codpes"].")"]["disciplinas"][$resposta["coddis"]]["dtafimaul"] = $resposta["dtafimaul"];
                 $dadosPos[$resposta["nompes"]." (".$resposta["codpes"].")"]["disciplinas"][$resposta["coddis"]]["nummtr"] = $resposta["nummtr"];
                 $dadosPos[$resposta["nompes"]." (".$resposta["codpes"].")"]["disciplinas"][$resposta["coddis"]]["horarios"][] = [
                     "diasmnocp"=>$dias[$resposta["diasmnocp"]],
@@ -107,10 +107,57 @@ class RelatoriosController extends Controller
                 ];
             }
 
+            $query = " select P.nompes, V.codpes, O.codofeatvceu as coddis, A.nomatvceu as nomdis, FORMAT(O.dtainiofeatv, 'dd/MM/yyyy') as dtainiaul, FORMAT(O.dtafimofeatv, 'dd/MM/yyyy') as dtafimaul, M.cgahormis,D.idcdiasmn as diasmnocp, D.horent, D.horsai, COUNT(MC.codcurceu) as nummtr";
+            $query .= " from PESSOA as P, VINCULOPESSOAUSP as V, OFERECIMENTOATIVIDADECEU as O, DIAOFERECIMENTOCEU as D, CURSOCEU as C, MINISTRANTECEU as M, ATIVIDADECEU as A, MATRICULACURSOCEU as MC";
+            $query .= " where V.codund = :codund";
+            $query .= " and V.tipfnc = :tipfnc";
+            $query .= " and V.codset = :codset";
+            $query .= " and P.codpes = V.codpes";
+            $query .= " and YEAR(O.dtainiofeatv) in (:ano)";
+            $query .= " and MONTH(O.dtainiofeatv) >= :mesmin";
+            $query .= " and MONTH(O.dtainiofeatv) <= :mesmax";
+            $query .= " and M.codpes = V.codpes";
+            $query .= " and O.codofeatvceu = M.codofeatvceu";
+            $query .= " and A.codatvceu = O.codatvceu";
+            $query .= " and A.codund = :codund";
+            $query .= " and C.codcurceu = O.codcurceu";
+            $query .= " and C.codcurceu != :remcodcurceu";
+            $query .= " and MC.codcurceu = O.codcurceu";
+            $query .= " and MC.codedicurceu = O.codedicurceu";
+            $query .= " and D.codofeatvceu = O.codofeatvceu";
+            $query .= " group by P.nompes, V.codpes,O.codofeatvceu, A.nomatvceu, FORMAT(O.dtainiofeatv, 'dd/MM/yyyy'), FORMAT(O.dtafimofeatv, 'dd/MM/yyyy'), M.cgahormis,D.idcdiasmn, D.horent, D.horsai";
+            $query .= " order by P.nompes asc;";
+            $param = [
+                'codund' => '45',
+                'tipfnc' => 'Docente',
+                'ano' => $validated["ano"],
+                'mesmin' => $validated["semestre"] == 1 ? 1 : 7,
+                'mesmax' => $validated["semestre"] == 1 ? 6 : 12,
+                'codset' => $codigoSetores[$validated["departamento"]],
+                'remcodcurceu' => '450200005',
+            ];
+
+            $dadosCeu = array();
+            $respostas = DB::fetchAll($query, $param);
+            $dias = ["1"=>"dom","2"=>"seg","3"=>"ter","4"=>"qua","5"=>"qui","6"=>"sex","7"=>"sab"];
+            foreach($respostas as $resposta){
+                $dadosCeu[$resposta["nompes"]." (".$resposta["codpes"].")"]["disciplinas"][$resposta["coddis"]. "\0"]["nomdis"] = $resposta["nomdis"];
+                $dadosCeu[$resposta["nompes"]." (".$resposta["codpes"].")"]["disciplinas"][$resposta["coddis"]. "\0"]["nivel"] = "Cultura e Extensão";
+                $dadosCeu[$resposta["nompes"]." (".$resposta["codpes"].")"]["disciplinas"][$resposta["coddis"]. "\0"]["cgahormis"] = $resposta["cgahormis"];
+                $dadosCeu[$resposta["nompes"]." (".$resposta["codpes"].")"]["disciplinas"][$resposta["coddis"]. "\0"]["dtainiaul"] = $resposta["dtainiaul"];
+                $dadosCeu[$resposta["nompes"]." (".$resposta["codpes"].")"]["disciplinas"][$resposta["coddis"]. "\0"]["dtafimaul"] = $resposta["dtafimaul"];
+                $dadosCeu[$resposta["nompes"]." (".$resposta["codpes"].")"]["disciplinas"][$resposta["coddis"]. "\0"]["nummtr"] = $resposta["nummtr"];
+                $dadosCeu[$resposta["nompes"]." (".$resposta["codpes"].")"]["disciplinas"][$resposta["coddis"]. "\0"]["horarios"][] = [
+                    "diasmnocp"=>$dias[$resposta["diasmnocp"]],
+                    "horent"=>str_pad($resposta["horent"], 5, "0", STR_PAD_LEFT),
+                    "horsai"=>str_pad($resposta["horsai"], 5, "0", STR_PAD_LEFT),
+                ];
+            }
+
             $departamento = $validated["departamento"];
             $ano = $validated["ano"];
             $semestre = $validated["semestre"];
-            $dados = array_merge_recursive($dadosGraduação, $dadosPos);
+            $dados = array_merge_recursive($dadosGraduação, $dadosPos, $dadosCeu);
 
             ksort($dados);
 
@@ -121,6 +168,9 @@ class RelatoriosController extends Controller
                         foreach($dados[$key]["disciplinas"][$key2]["turmas"] as $key3=>$values3){
                             $horarios = $dados[$key]["disciplinas"][$key2]["turmas"][$key3]["horarios"];
                             usort($horarios, function($a,$b)use($dias){
+                                if($a["diasmnocp"] == $b["diasmnocp"]){
+                                    return $a["horent"] <=> $b["horent"];
+                                }
                                 return $dias[$a["diasmnocp"]] <=> $dias[$b["diasmnocp"]];
                             });
                             $dados[$key]["disciplinas"][$key2]["turmas"][$key3]["horarios"] = $horarios;
@@ -128,6 +178,18 @@ class RelatoriosController extends Controller
                     }elseif($dados[$key]["disciplinas"][$key2]["nivel"] == "Pós Graduação"){
                         $horarios = $dados[$key]["disciplinas"][$key2]["horarios"];
                         usort($horarios, function($a,$b)use($dias){
+                            if($a["diasmnocp"] == $b["diasmnocp"]){
+                                return $a["horent"] <=> $b["horent"];
+                            }
+                            return $dias[$a["diasmnocp"]] <=> $dias[$b["diasmnocp"]];
+                        });
+                        $dados[$key]["disciplinas"][$key2]["horarios"] = $horarios;
+                    }elseif($dados[$key]["disciplinas"][$key2]["nivel"] == "Cultura e Extensão"){
+                        $horarios = $dados[$key]["disciplinas"][$key2]["horarios"];
+                        usort($horarios, function($a,$b)use($dias){
+                            if($a["diasmnocp"] == $b["diasmnocp"]){
+                                return $a["horent"] <=> $b["horent"];
+                            }
                             return $dias[$a["diasmnocp"]] <=> $dias[$b["diasmnocp"]];
                         });
                         $dados[$key]["disciplinas"][$key2]["horarios"] = $horarios;
