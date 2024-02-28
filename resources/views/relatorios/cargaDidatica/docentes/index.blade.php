@@ -26,7 +26,7 @@
                                 <tr>
                                     <th class="text-center" rowspan="2" style="vertical-align: middle;">Sigla da Disciplina</th>
                                     <th class="text-center" rowspan="2" style="vertical-align: middle;">Nome da Disciplina</th>
-                                    <th class="text-center" colspan="2" style="vertical-align: middle;">Carga horária</th>
+                                    <th class="text-center" colspan="2" style="vertical-align: middle;">Créditos</th>
                                     <th class="text-center" rowspan="2" style="vertical-align: middle;">Inicio</th>
                                     <th class="text-center" rowspan="2" style="vertical-align: middle;">Fim</th>
                                     <th class="text-center" rowspan="2" style="vertical-align: middle;">Turma</th>
@@ -80,7 +80,7 @@
                                 <tr>
                                     <th class="text-center" rowspan="2" style="vertical-align: middle;">Sigla da Disciplina</th>
                                     <th class="text-center" rowspan="2" style="vertical-align: middle;">Nome da Disciplina</th>
-                                    <th class="text-center" colspan="3" style="vertical-align: middle;">Carga horária</th>
+                                    <th class="text-center" colspan="2" style="vertical-align: middle;">Carga horária</th>
                                     <th class="text-center" rowspan="2" style="vertical-align: middle;">Créditos</th>
                                     <th class="text-center" rowspan="2" style="vertical-align: middle;">Inicio</th>
                                     <th class="text-center" rowspan="2" style="vertical-align: middle;">Fim</th>
@@ -90,7 +90,6 @@
                                 <tr class="text-center">
                                     <th>Teórica</th>
                                     <th>Prática</th>
-                                    <th>Estudos</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -100,7 +99,6 @@
                                         <td class="text-center" style="vertical-align: middle;width:500px;">{{ $disciplina["nomdis"] }}</td>
                                         <td class="text-center" style="vertical-align: middle;">{{ $disciplina["cgahorteodis"] }}</td>
                                         <td class="text-center" style="vertical-align: middle;">{{ $disciplina["cgahorpradis"] }}</td>
-                                        <td class="text-center" style="vertical-align: middle;">{{ $disciplina["cgahoresddis"] }}</td>
                                         <td class="text-center" style="vertical-align: middle;">{{ $disciplina["numcretotdis"] }}</td>
                                         <td class="text-center" style="vertical-align: middle;">{{ $disciplina["dtainiaul"] }}</td>
                                         <td class="text-center" style="vertical-align: middle;">{{ $disciplina["dtafimaul"] }}</td>

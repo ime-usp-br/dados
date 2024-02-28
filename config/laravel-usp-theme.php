@@ -11,11 +11,23 @@ $admin = [
 $submenu2 = [
     [
         'type' => 'header',
-        'text' => 'Atividade Docente',
+        'text' => 'Carga Didática',
     ],
     [
-        'text' => 'Carga Didática',
-        'url' => 'relatorios/cargadidatica',
+        'text' => 'Disciplinas',
+        'url' => 'relatorios/cargadidatica/disciplinas',
+    ],
+    [
+        'text' => 'Docente',
+        'url' => 'relatorios/cargadidatica/docentes',
+    ],
+    [
+        'type' => 'header',
+        'text' => 'Análise de bolsas',
+    ],
+    [
+        'text' => 'Monitoria',
+        'url' => 'relatorios/analisedebolsas/monitoria',
     ],
 ];
 

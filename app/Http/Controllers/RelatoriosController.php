@@ -5,10 +5,14 @@ use Illuminate\Http\Request;
 use App\Http\Requests\CargaDidaticaRequest;
 use Illuminate\Support\Facades\Auth;
 use Uspdev\Replicado\DB;
+use App\Models\Turma;
+use App\Models\Semestre;
+use App\Models\Docente;
+use App\Models\Horario;
 
 class RelatoriosController extends Controller
 {
-    public function cargaDidatica(CargaDidaticaRequest $request)
+    public function cargaDidaticaDocentes(CargaDidaticaRequest $request)
     {
         if(!Auth::check()){
             return redirect(route("login"));
@@ -18,7 +22,9 @@ class RelatoriosController extends Controller
         
         if(isset($validated["departamento"]) and isset($validated["ano"]) and isset($validated["semestre"])){
             $codigoSetores = ["MAC"=>1664, "MAE"=>1665, "MAP"=>1666, "MAT"=>1667];
-            $query = " select distinct P.nompes, V.codpes, M.coddis, D.nomdis, M.codtur, FORMAT(M.dtainiaul, 'dd/MM/yyyy') as dtainiaul, FORMAT(M.dtafimaul, 'dd/MM/yyyy') as dtafimaul, D.creaul, D.cretrb, (T.nummtr+T.nummtrturcpl+T.nummtropt+T.nummtrecr) as nummtr,M.diasmnocp, H.horent, H.horsai";
+            $semestre = Semestre::firstOrCreate(["ano"=>$validated["ano"],"periodo"=>$validated["semestre"]]);
+
+            $query = " select distinct P.nompes, V.codpes, V.codset, M.coddis, D.nomdis, M.codtur, FORMAT(M.dtainiaul, 'dd/MM/yyyy') as dtainiaul, FORMAT(M.dtafimaul, 'dd/MM/yyyy') as dtafimaul, D.creaul, D.cretrb, (T.nummtr+T.nummtrturcpl+T.nummtropt+T.nummtrecr) as nummtr,M.diasmnocp, H.horent, H.horsai";
             $query .= " from VINCULOPESSOAUSP as V, PESSOA as P, MINISTRANTE as M, DISCIPLINAGR as D, TURMAGR as T, PERIODOHORARIO as H";
             $query .= " where V.codund = :codund";
             $query .= " and V.codset = :codset";
@@ -35,12 +41,13 @@ class RelatoriosController extends Controller
             $query .= " order by nompes, coddis, codtur asc";
             $param = [
                 'codund' => '45',
-                'codtur' => $validated["ano"].$validated["semestre"]."%",
+                'codtur' => $semestre->ano.$semestre->periodo."%",
                 'codset' => $codigoSetores[$validated["departamento"]],
             ];
 
-            $dadosGraduação = array();
             $respostas = DB::fetchAll($query, $param);
+
+            $dadosGraduação = array();
             foreach($respostas as $resposta){
                 $dadosGraduação[$resposta["nompes"]." (".$resposta["codpes"].")"]["disciplinas"][$resposta["coddis"]]["nomdis"] = $resposta["nomdis"];
                 $dadosGraduação[$resposta["nompes"]." (".$resposta["codpes"].")"]["disciplinas"][$resposta["coddis"]]["nivel"] = "Graduação";
@@ -56,13 +63,13 @@ class RelatoriosController extends Controller
                 ];
             }
 
-            $query = " select P.nompes, VP.codpes, R32.sgldis as coddis, D.nomdis, FORMAT(O.dtainiofe, 'dd/MM/yyyy') as dtainiaul, FORMAT(O.dtafimofe, 'dd/MM/yyyy') as dtafimaul, D.cgahorteodis, D.cgahorpradis, D.cgahoresddis, D.cgahordis, D.numcretotdis, ET.diasmnofe as diasmnocp, ET.horiniofe as horent, ET.horfimofe as horsai, count(*) as nummtr";
-            $query .= " from VINCULOPESSOAUSP as VP, PESSOA as P, DISCIPLINA as D, R32TURMINDOC as R32, OFERECIMENTO as O, R41PGMMATTUR as R41, ESPACOTURMA as ET";
-            $query .= " where VP.codund = :codund";
-            $query .= " and VP.tipfnc = 'Docente'";
-            $query .= " and VP.codset = :codset";
-            $query .= " and P.codpes = VP.codpes";
-            $query .= " and R32.codpes = VP.codpes";
+            $query = " select P.nompes, V.codpes, V.codset, R32.sgldis as coddis, D.nomdis, FORMAT(O.dtainiofe, 'dd/MM/yyyy') as dtainiaul, FORMAT(O.dtafimofe, 'dd/MM/yyyy') as dtafimaul, D.cgahorteodis as creaul, D.cgahorpradis as cretrb, D.cgahordis, D.numcretotdis, ET.diasmnofe as diasmnocp, ET.horiniofe as horent, ET.horfimofe as horsai, count(*) as nummtr";
+            $query .= " from VINCULOPESSOAUSP as V, PESSOA as P, DISCIPLINA as D, R32TURMINDOC as R32, OFERECIMENTO as O, R41PGMMATTUR as R41, ESPACOTURMA as ET";
+            $query .= " where V.codund = :codund";
+            $query .= " and V.tipfnc = 'Docente'";
+            $query .= " and V.codset = :codset";
+            $query .= " and P.codpes = V.codpes";
+            $query .= " and R32.codpes = V.codpes";
             $query .= " and O.sgldis = R32.sgldis";
             $query .= " and O.numseqdis = R32.numseqdis";
             $query .= " and O.numofe = R32.numofe";
@@ -77,24 +84,24 @@ class RelatoriosController extends Controller
             $query .= " and ET.sgldis = R32.sgldis";
             $query .= " and ET.numseqdis = R32.numseqdis";
             $query .= " and ET.numofe = R32.numofe";
-            $query .= " group by P.nompes, VP.codpes, D.nomdis, R32.sgldis, O.dtainiofe, O.dtafimofe, D.cgahorteodis, D.cgahorpradis, D.cgahoresddis, D.cgahordis, D.numcretotdis, ET.diasmnofe, ET.horiniofe, ET.horfimofe";
+            $query .= " group by P.nompes, V.codpes, V.codset, D.nomdis, R32.sgldis, O.dtainiofe, O.dtafimofe, D.cgahorteodis, D.cgahorpradis, D.cgahordis, D.numcretotdis, ET.diasmnofe, ET.horiniofe, ET.horfimofe";
             $param = [
                 'codund' => '45',
-                'ano' => $validated["ano"],
-                'mesmin' => $validated["semestre"] == 1 ? 1 : 7,
-                'mesmax' => $validated["semestre"] == 1 ? 6 : 12,
                 'codset' => $codigoSetores[$validated["departamento"]],
+                'ano' => $semestre->ano,
+                'mesmin' => $semestre->periodo == 1 ? 1 : 7,
+                'mesmax' => $semestre->periodo == 1 ? 6 : 12,
             ];
 
-            $dadosPos = array();
             $respostas = DB::fetchAll($query, $param);
+
+            $dadosPos = array();
             $dias = ["2SG"=>"seg","3TR"=>"ter","4QA"=>"qua","5QI"=>"qui","6SX"=>"sex"];
             foreach($respostas as $resposta){
                 $dadosPos[$resposta["nompes"]." (".$resposta["codpes"].")"]["disciplinas"][$resposta["coddis"]]["nomdis"] = $resposta["nomdis"];
                 $dadosPos[$resposta["nompes"]." (".$resposta["codpes"].")"]["disciplinas"][$resposta["coddis"]]["nivel"] = "Pós Graduação";
-                $dadosPos[$resposta["nompes"]." (".$resposta["codpes"].")"]["disciplinas"][$resposta["coddis"]]["cgahorteodis"] = $resposta["cgahorteodis"];
-                $dadosPos[$resposta["nompes"]." (".$resposta["codpes"].")"]["disciplinas"][$resposta["coddis"]]["cgahorpradis"] = $resposta["cgahorpradis"];
-                $dadosPos[$resposta["nompes"]." (".$resposta["codpes"].")"]["disciplinas"][$resposta["coddis"]]["cgahoresddis"] = $resposta["cgahoresddis"];
+                $dadosPos[$resposta["nompes"]." (".$resposta["codpes"].")"]["disciplinas"][$resposta["coddis"]]["cgahorteodis"] = $resposta["creaul"];
+                $dadosPos[$resposta["nompes"]." (".$resposta["codpes"].")"]["disciplinas"][$resposta["coddis"]]["cgahorpradis"] = $resposta["cretrb"];
                 $dadosPos[$resposta["nompes"]." (".$resposta["codpes"].")"]["disciplinas"][$resposta["coddis"]]["cgahordis"] = $resposta["cgahordis"];
                 $dadosPos[$resposta["nompes"]." (".$resposta["codpes"].")"]["disciplinas"][$resposta["coddis"]]["numcretotdis"] = $resposta["numcretotdis"];
                 $dadosPos[$resposta["nompes"]." (".$resposta["codpes"].")"]["disciplinas"][$resposta["coddis"]]["dtainiaul"] = $resposta["dtainiaul"];
@@ -107,7 +114,7 @@ class RelatoriosController extends Controller
                 ];
             }
 
-            $query = " select P.nompes, V.codpes, O.codofeatvceu as coddis, A.nomatvceu as nomdis, FORMAT(O.dtainiofeatv, 'dd/MM/yyyy') as dtainiaul, FORMAT(O.dtafimofeatv, 'dd/MM/yyyy') as dtafimaul, M.cgahormis,D.idcdiasmn as diasmnocp, D.horent, D.horsai, COUNT(MC.codcurceu) as nummtr";
+            $query = " select P.nompes, V.codpes, V.codset, O.codofeatvceu as coddis, A.nomatvceu as nomdis, FORMAT(O.dtainiofeatv, 'dd/MM/yyyy') as dtainiaul, FORMAT(O.dtafimofeatv, 'dd/MM/yyyy') as dtafimaul, M.cgahormis,D.idcdiasmn as diasmnocp, D.horent, D.horsai, COUNT(MC.codcurceu) as nummtr";
             $query .= " from PESSOA as P, VINCULOPESSOAUSP as V, OFERECIMENTOATIVIDADECEU as O, DIAOFERECIMENTOCEU as D, CURSOCEU as C, MINISTRANTECEU as M, ATIVIDADECEU as A, MATRICULACURSOCEU as MC";
             $query .= " where V.codund = :codund";
             $query .= " and V.tipfnc = :tipfnc";
@@ -125,20 +132,21 @@ class RelatoriosController extends Controller
             $query .= " and MC.codcurceu = O.codcurceu";
             $query .= " and MC.codedicurceu = O.codedicurceu";
             $query .= " and D.codofeatvceu = O.codofeatvceu";
-            $query .= " group by P.nompes, V.codpes,O.codofeatvceu, A.nomatvceu, FORMAT(O.dtainiofeatv, 'dd/MM/yyyy'), FORMAT(O.dtafimofeatv, 'dd/MM/yyyy'), M.cgahormis,D.idcdiasmn, D.horent, D.horsai";
+            $query .= " group by P.nompes, V.codpes, V.codset,O.codofeatvceu, A.nomatvceu, FORMAT(O.dtainiofeatv, 'dd/MM/yyyy'), FORMAT(O.dtafimofeatv, 'dd/MM/yyyy'), M.cgahormis,D.idcdiasmn, D.horent, D.horsai";
             $query .= " order by P.nompes asc;";
             $param = [
                 'codund' => '45',
                 'tipfnc' => 'Docente',
-                'ano' => $validated["ano"],
-                'mesmin' => $validated["semestre"] == 1 ? 1 : 7,
-                'mesmax' => $validated["semestre"] == 1 ? 6 : 12,
                 'codset' => $codigoSetores[$validated["departamento"]],
+                'ano' => $semestre->ano,
+                'mesmin' => $semestre->periodo == 1 ? 1 : 7,
+                'mesmax' => $semestre->periodo == 1 ? 6 : 12,
                 'remcodcurceu' => '450200005',
             ];
+            
+            $respostas = DB::fetchAll($query, $param);
 
             $dadosCeu = array();
-            $respostas = DB::fetchAll($query, $param);
             $dias = ["1"=>"dom","2"=>"seg","3"=>"ter","4"=>"qua","5"=>"qui","6"=>"sex","7"=>"sab"];
             foreach($respostas as $resposta){
                 $dadosCeu[$resposta["nompes"]." (".$resposta["codpes"].")"]["disciplinas"][$resposta["coddis"]. "\0"]["nomdis"] = $resposta["nomdis"];
@@ -197,7 +205,7 @@ class RelatoriosController extends Controller
                 }
             }
             
-            return view("relatorios.cargaDidatica", compact([
+            return view("relatorios.cargaDidatica.docentes.index", compact([
                 "dados",
                 "departamento",
                 "ano",
@@ -205,6 +213,33 @@ class RelatoriosController extends Controller
             ]));
         }
 
-        return view("relatorios.createCargaDidatica");
+        return view("relatorios.cargaDidatica.docentes.create");
+    }
+
+    public function cargaDidaticaDisciplinas(CargaDidaticaRequest $request)
+    {
+        if(!Auth::check()){
+            return redirect(route("login"));
+        }
+
+        $validated = $request->validated();
+        
+        if(isset($validated["departamento"]) and isset($validated["ano"]) and isset($validated["semestre"])){
+            $codigoSetores = ["MAC"=>1664, "MAE"=>1665, "MAP"=>1666, "MAT"=>1667];
+
+            $departamento = $validated["departamento"];
+            $semestre = Semestre::firstOrCreate(["ano"=>$validated["ano"],"periodo"=>$validated["semestre"]]);
+            $turmas = Turma::whereBelongsTo($semestre)->where("coddis", "like", $departamento."%")->get(); //supondo que as turmas ja existam(talvez n seja o caso)
+            
+            $turmas = $turmas->sortBy(['nivel','coddis','codtur']);
+
+            return view("relatorios.cargaDidatica.disciplinas.index", compact([
+                "turmas",
+                "departamento",
+                "semestre"
+            ]));
+        }
+
+        return view("relatorios.cargaDidatica.disciplinas.create");
     }
 }
