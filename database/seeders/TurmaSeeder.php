@@ -83,14 +83,17 @@ class TurmaSeeder extends Seeder
                         "semestre_id"=>$semestre->id,
                 ]);
 
-                $query = " select distinct M.codpes, P.nompes, V.codset, M.diasmnocp, PH.horent, PH.horsai";
-                $query .= " from MINISTRANTE as M, VINCULOPESSOAUSP as V, PESSOA as P, PERIODOHORARIO as PH";
+                $query = " select distinct M.codpes, P.nompes, V.codset, OT.diasmnocp, PH.horent, PH.horsai";
+                $query .= " from MINISTRANTE as M, VINCULOPESSOAUSP as V, PESSOA as P, OCUPTURMA as OT, PERIODOHORARIO as PH";
                 $query .= " where M.coddis = :coddis";
                 $query .= " and M.codtur = :codtur";
                 $query .= " and M.verdis = (select max(M2.verdis) from MINISTRANTE as M2 where M2.coddis = M.coddis and M2.codtur = M.codtur)";
                 $query .= " and V.codpes = M.codpes";
                 $query .= " and P.codpes = M.codpes";
-                $query .= " and PH.codperhor = M.codperhor";
+                $query .= " and OT.coddis = M.coddis";
+                $query .= " and OT.codtur = M.codtur";
+                $query .= " and OT.verdis = M.verdis";
+                $query .= " and PH.codperhor = OT.codperhor";
                 $param = [
                     'coddis' => $turma->coddis,
                     'codtur' => $turma->codtur,
