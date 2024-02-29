@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Http\Requests\CargaDidaticaRequest;
+use App\Http\Requests\AnaliseDeBolsasMonitoriaRequest;
 use Illuminate\Support\Facades\Auth;
 use Uspdev\Replicado\DB;
 use App\Models\Turma;
@@ -241,5 +242,29 @@ class RelatoriosController extends Controller
         }
 
         return view("relatorios.cargaDidatica.disciplinas.create");
+    }
+
+    public function analiseDeBolsasMonitoria(AnaliseDeBolsasMonitoriaRequest $request)
+    {
+        if(!Auth::check()){
+            return redirect(route("login"));
+        }
+
+        $validated = $request->validated();
+        
+        if(isset($validated["ano"]) and isset($validated["semestre"])){
+            $semestre = Semestre::firstOrCreate(["ano"=>$validated["ano"],"periodo"=>$validated["semestre"]]);
+            $turmas = Turma::whereBelongsTo($semestre)->get(); //supondo que as turmas ja existam(talvez n seja o caso)
+            
+            $turmas = $turmas->sortBy(['nivel','coddis','codtur']);
+
+            return view("relatorios.analiseDeBolsas.monitoria.index", compact([
+                "turmas",
+                "semestre"
+            ]));
+        }
+
+        return view("relatorios.analiseDeBolsas.monitoria.create");
+
     }
 }
