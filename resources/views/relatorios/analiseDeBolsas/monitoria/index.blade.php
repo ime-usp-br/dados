@@ -39,7 +39,7 @@
                                 <th class="text-center" rowspan="2" style="vertical-align: middle;">Alunos matriculados</th>
                                 <th class="text-center" rowspan="2" style="vertical-align: middle;">Horário</th>
                                 <th class="text-center" rowspan="2" style="vertical-align: middle;">Nível</th>
-                                <th class="text-center" rowspan="2" style="vertical-align: middle;">Histórico de alunos <br>matriculados nos três<br> períodos anteriores</th>
+                                <th class="text-center" rowspan="2" style="vertical-align: middle;">Histórico de alunos <br>matriculados nos cinco<br> períodos anteriores</th>
                                 <th class="text-center" rowspan="2" style="vertical-align: middle;">Observações</th>
                             </tr>
                             <tr class="text-center">
@@ -87,7 +87,7 @@
                                             $query = $query->where("codtur", "like", "%".substr($turma->codtur,4,3));
                                         }
 
-                                        $ts = $query->get()->sortByDesc("codtur")->slice(0,3);
+                                        $ts = $query->get()->sortByDesc("codtur")->slice(0,5);
                                     ?>
                                     <td class="text-center" style="vertical-align: middle;">
                                         @if(count($ts) > 0)
