@@ -11,9 +11,19 @@
             <h1 class='text-center mb-5'>{{$semestre->periodo}}° semestre de {{$semestre->ano}}</h1>
 
             <?php 
-                $disciplinas = App\Models\Turma::whereBelongsTo($semestre)
-                                                ->pluck("nomdis","coddis")
-                                                ->unique()->sortKeys()->toArray();
+                $disciplinas = App\Models\Turma::whereBelongsTo($semestre)->get(['nomdis','coddis']);
+
+                
+                $disciplinasFiltradas = collect([]);
+
+                foreach ($disciplinas as $disciplina) {
+                    if (!$disciplinasFiltradas->has($disciplina->coddis)) {
+                        $disciplinasFiltradas->put($disciplina->coddis, $disciplina->nomdis);
+                    }
+                }
+
+                $disciplinas = $disciplinasFiltradas->sortKeys()->toArray();
+
             ?>
             @if(count($disciplinas) > 0)
                 @foreach($disciplinas as $coddis=>$nomdis)
