@@ -49,7 +49,7 @@ class TurmaSeeder extends Seeder
 
             $turmasBruto = array_merge($ccm, DB::fetchAll($query, $param));
             
-            $query = " select T.coddis, D.nomdis, T.codtur, FORMAT(T.dtainitur, 'dd/MM/yyyy') as dtainiaul, FORMAT(T.dtafimtur , 'dd/MM/yyyy') as dtafimaul, D.creaul, D.cretrb, (T.nummtr+T.nummtrturcpl+T.nummtropt+T.nummtrecr) as nummtr";
+            $query = " select T.coddis, D.nomdis, T.codtur, FORMAT(T.dtainitur, 'dd/MM/yyyy') as dtainiaul, FORMAT(T.dtafimtur , 'dd/MM/yyyy') as dtafimaul, D.creaul, D.cretrb, (T.nummtr+T.nummtrturcpl+T.nummtropt+T.nummtrecr+T.nummtroptlre) as nummtr";
             $query .= " from TURMAGR as T";
             $query .= " JOIN DISCIPLINAGR AS D ON T.coddis = D.coddis AND T.verdis = D.verdis";
             $query .= " JOIN ( VALUES ";
