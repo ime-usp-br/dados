@@ -7,7 +7,14 @@
 <div id="layout_conteudo">
     <div class="justify-content-center">
         <div class="col-md-12">
-            <h1 class='text-center'>Relatório de Discentes Ingressantes</h1>
+            <h1 class='text-center'>Relatório de Discentes Ingressantes {{ $ano }}</h1>
+            <h2 class='text-center'>{{ $curso['nomcur'] }}</h2>
+            <h3 class='text-center'>
+                @if($curso['codhab']>4)
+                    {{ $curso['nomhab'].' - ' }}
+                @endif
+                {{ ucfirst($curso['perhab']) }}
+            </h3>
             
             @if(count($alunos) > 0)
                 <table id="table_alunos" class="table table-bordered" style="font-size:12px;">

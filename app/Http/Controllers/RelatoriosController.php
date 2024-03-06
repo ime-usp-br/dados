@@ -299,8 +299,30 @@ class RelatoriosController extends Controller
 
             $alunos = DB::fetchAll($query,$param);
 
+            $query = " select C.codcur, C.nomcur, H.codhab, H.nomhab, H.perhab";
+            $query .= " from CURSOGR as C, HABILITACAOGR as H";
+            $query .= " where C.codcur = :codcur";
+            $query .= " and C.dtadtvcur is null";
+            $query .= " and H.codcur = :codcur";
+            $query .= " and H.codhab = :codhab";
+            $query .= " and H.dtadtvhab is null";
+            $param = [
+                'codcur' => $codcur,
+                'codhab' => $codhab,
+            ];
+    
+            $curso = DB::fetchAll($query,$param);
+
+            if($curso){
+                $curso = $curso[0];
+            }
+
+            $ano = $validated["ano"];
+
             return view("relatorios.discentes.ingressantes.index", compact([
-                'alunos'
+                'alunos',
+                'curso',
+                'ano'
             ]));
         }
 
