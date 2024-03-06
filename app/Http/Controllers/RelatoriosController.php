@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Http\Requests\CargaDidaticaRequest;
 use App\Http\Requests\AnaliseDeBolsasMonitoriaRequest;
+use App\Http\Requests\DiscentesIngressantesRequest;
 use Illuminate\Support\Facades\Auth;
 use Uspdev\Replicado\DB;
 use App\Models\Turma;
@@ -265,6 +266,60 @@ class RelatoriosController extends Controller
         }
 
         return view("relatorios.analiseDeBolsas.monitoria.create");
+
+    }
+
+    public function discentesIngressantes(DiscentesIngressantesRequest $request)
+    {
+        if(!Auth::check()){
+            return redirect(route("login"));
+        }
+
+        $validated = $request->validated();
+        
+        if(isset($validated["ano"]) and isset($validated["codcurhab"])){
+            $codcur = explode("-", $validated["codcurhab"])[0];
+            $codhab = explode("-", $validated["codcurhab"])[1];
+
+            $query = " SELECT H.codcur, H.codhab, PS.codpes, PS.nompes, P.stapgm, P.tipencpgm, FORMAT(P.dtaing, 'dd/MM/yyyy') as dtaing, FORMAT(H.dtafim, 'dd/MM/yyyy') as dtafim, PS.sexpes, P.numopcing, P.tiping, P.clsing, P.codpgm, 'ALUNOGR', FORMAT(PS.dtanas, 'dd/MM/yyyy') as dtanas, R.raccor";
+            $query .= " FROM PESSOA AS PS";
+            $query .= " INNER JOIN HABILPROGGR AS H ON H.codpes = PS.codpes";
+            $query .= " INNER JOIN PROGRAMAGR AS P ON P.codpes = PS.codpes AND P.codpgm = H.codpgm";
+            $query .= " INNER JOIN COMPLPESSOA AS CP ON PS.codpes = CP.codpes";
+            $query .= " LEFT JOIN RACACOR AS R ON CP.codraccor = R.codraccor";
+            $query .= " WHERE H.codcur = :codcur";
+            $query .= " AND H.codhab = :codhab";
+            $query .= " AND YEAR(P.dtaing) = :ano";
+            $query .= " ORDER BY PS.nompes ASC";
+            $param = [
+                'codcur' => $codcur,
+                'codhab' => $codhab,
+                'ano' => $validated["ano"],
+            ];
+
+            $alunos = DB::fetchAll($query,$param);
+
+            return view("relatorios.discentes.ingressantes.index", compact([
+                'alunos'
+            ]));
+        }
+
+        $query = " select C.codcur, C.nomcur, H.codhab, H.nomhab";
+        $query .= " from CURSOGR as C, HABILITACAOGR as H";
+        $query .= " where C.codclg = :codclg";
+        $query .= " and C.dtadtvcur is null";
+        $query .= " and H.codcur = C.codcur";
+        $query .= " and H.dtadtvhab is null";
+        $query .= " order by C.codcur, H.codhab asc";
+        $param = [
+            'codclg' => '45'
+        ];
+
+        $cursos = DB::fetchAll($query,$param);
+
+        return view("relatorios.discentes.ingressantes.create", compact([
+            'cursos'
+        ]));
 
     }
 }

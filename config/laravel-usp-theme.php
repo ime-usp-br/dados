@@ -22,12 +22,26 @@ $submenu2 = [
         'url' => 'relatorios/cargadidatica/docentes',
     ],
     [
+        'type' => 'divider',
+    ],
+    [
         'type' => 'header',
         'text' => 'Análise de bolsas',
     ],
     [
         'text' => 'Monitoria',
         'url' => 'relatorios/analisedebolsas/monitoria',
+    ],
+    [
+        'type' => 'divider',
+    ],
+    [
+        'type' => 'header',
+        'text' => 'Discentes',
+    ],
+    [
+        'text' => 'Ingressantes',
+        'url' => 'relatorios/discentes/ingressantes',
     ],
 ];
 

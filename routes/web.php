@@ -15,9 +15,10 @@ use App\Http\Controllers\RelatoriosController;
 */
 
 Route::get('/', function () {
-    return view('main');
+    return endsectionview('main');
 })->name("home");
 
 Route::get("/relatorios/cargadidatica/disciplinas", [RelatoriosController::class, "cargaDidaticaDisciplinas"])->name("relatorios.cargaDidaticaDisciplinas");
 Route::get("/relatorios/cargadidatica/docentes", [RelatoriosController::class, "cargaDidaticaDocentes"])->name("relatorios.cargaDidaticaDocentes");
 Route::get("/relatorios/analisedebolsas/monitoria", [RelatoriosController::class, "analiseDeBolsasMonitoria"])->name("relatorios.analiseDeBolsasMonitoria");
+Route::get("/relatorios/discentes/ingressantes", [RelatoriosController::class, "discentesIngressantes"])->name("relatorios.discentesIngressantes");
