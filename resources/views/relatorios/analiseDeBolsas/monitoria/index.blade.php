@@ -103,9 +103,9 @@
                                         Provável dobradinha com 
                                         @foreach($turma->dobradinha->turmas()->where("id","!=",$turma->id)->get() as $t)
                                             @if($t->nivel == "Graduação")
-                                                {{ $t->coddis."(".$t->codtur.") "}}
+                                                {{ $t->coddis."(".$t->codtur.") "}}<br>
                                             @elseif($t->nivel == "Pós Graduação")
-                                                {{ $t->coddis." "}}
+                                                {{ $t->coddis." "}}<br>
                                             @endif
                                         @endforeach
                                     @endif
