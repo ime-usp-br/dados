@@ -15,7 +15,7 @@ use App\Http\Controllers\RelatoriosController;
 */
 
 Route::get('/', function () {
-    return endsectionview('main');
+    return view('main');
 })->name("home");
 
 Route::get("/relatorios/cargadidatica/disciplinas", [RelatoriosController::class, "cargaDidaticaDisciplinas"])->name("relatorios.cargaDidaticaDisciplinas");
