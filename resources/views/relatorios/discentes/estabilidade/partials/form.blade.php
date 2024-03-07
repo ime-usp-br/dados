@@ -23,11 +23,28 @@
 
 <div class="row custom-form-group justify-content-center">
     <div class="col-sm-2  text-sm-right" style="min-width:150px">
-        <label for="ano">Ano *</label>
+        <label for="anoini">Ano Inicial *</label>
     </div>
     <div class="col-sm-2" style="min-width:100px">
-        <select class="custom-form-control" type="text" name="ano"
-            id="ano" style="width:150px"
+        <select class="custom-form-control" type="text" name="anoini"
+            id="anoini" style="width:150px"
+        >
+            <option value="" selected></option>
+
+            @foreach (range(date("Y"), 2000) as $ano)
+                <option value="{{ $ano }}">{{ $ano }}</option>
+            @endforeach
+        </select>
+    </div>
+</div>
+
+<div class="row custom-form-group justify-content-center">
+    <div class="col-sm-2  text-sm-right" style="min-width:150px">
+        <label for="anofim">Ano Final *</label>
+    </div>
+    <div class="col-sm-2" style="min-width:100px">
+        <select class="custom-form-control" type="text" name="anofim"
+            id="anofim" style="width:150px"
         >
             <option value="" selected></option>
 

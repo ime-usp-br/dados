@@ -5,6 +5,7 @@ use Illuminate\Http\Request;
 use App\Http\Requests\CargaDidaticaRequest;
 use App\Http\Requests\AnaliseDeBolsasMonitoriaRequest;
 use App\Http\Requests\DiscentesIngressantesRequest;
+use App\Http\Requests\DiscentesEstabilidadeRequest;
 use Illuminate\Support\Facades\Auth;
 use Uspdev\Replicado\DB;
 use App\Models\Turma;
@@ -343,5 +344,104 @@ class RelatoriosController extends Controller
             'cursos'
         ]));
 
+    }
+
+    public function discentesEstabilidade(DiscentesEstabilidadeRequest $request)
+    {
+        if(!Auth::check()){
+            return redirect(route("login"));
+        }
+
+        $validated = $request->validated();
+        
+        if(isset($validated["anoini"]) and isset($validated["anofim"]) and isset($validated["codcurhab"])){
+            $codcur = explode("-", $validated["codcurhab"])[0];
+            $codhab = explode("-", $validated["codcurhab"])[1];
+            $dados = array();
+
+            foreach(range($validated["anoini"],$validated["anofim"]) as $ano){
+                $query = " SELECT PS.sexpes, P.tipencpgm";
+                $query .= " FROM PESSOA AS PS";
+                $query .= " INNER JOIN HABILPROGGR AS H ON (PS.codpes = H.codpes)";
+                $query .= " INNER JOIN PROGRAMAGR AS P ON (PS.codpes = P.codpes AND H.codpgm = P.codpgm)";
+                $query .= " WHERE H.codcur = :codcur AND H.codhab = :codhab";
+                $query .= " AND P.stapgm = :stapgm";
+                $query .= " AND YEAR(H.dtafim) = :ano_encerramento_programa";
+                $param = [
+                    'codcur' => $codcur,
+                    'codhab' => $codhab,
+                    'stapgm' => 'E',
+                    'ano_encerramento_programa' => $ano,
+                ];
+
+                $respostas = DB::fetchAll($query,$param);
+
+                $dados[$ano]["Formadas"] = count(array_filter($respostas, function($var){
+                    return $var['sexpes'] == "F" and str_contains($var['tipencpgm'], "Conclusão");
+                }));
+
+                $dados[$ano]["Formados"] = count(array_filter($respostas, function($var){
+                    return $var['sexpes'] == "M" and str_contains($var['tipencpgm'], "Conclusão");
+                }));
+
+                $dados[$ano]["Transferidas"] = count(array_filter($respostas, function($var){
+                    return $var['sexpes'] == "F" and str_contains($var['tipencpgm'], "Transferência");
+                }));
+
+                $dados[$ano]["Transferidos"] = count(array_filter($respostas, function($var){
+                    return $var['sexpes'] == "M" and str_contains($var['tipencpgm'], "Transferência");
+                }));
+
+                $dados[$ano]["Outros Feminino"] = count(array_filter($respostas, function($var){
+                    return $var['sexpes'] == "F" and !str_contains($var['tipencpgm'], "Transferência") and !str_contains($var['tipencpgm'], "Conclusão");
+                }));
+
+                $dados[$ano]["Outros Masculino"] = count(array_filter($respostas, function($var){
+                    return $var['sexpes'] == "M" and !str_contains($var['tipencpgm'], "Transferência") and !str_contains($var['tipencpgm'], "Conclusão");
+                }));
+
+                $dados[$ano]["Total"] = count($respostas);
+            }
+
+            $query = " select C.codcur, C.nomcur, H.codhab, H.nomhab, H.perhab";
+            $query .= " from CURSOGR as C, HABILITACAOGR as H";
+            $query .= " where C.codcur = :codcur";
+            $query .= " and C.dtadtvcur is null";
+            $query .= " and H.codcur = :codcur";
+            $query .= " and H.codhab = :codhab";
+            $query .= " and H.dtadtvhab is null";
+            $param = [
+                'codcur' => $codcur,
+                'codhab' => $codhab,
+            ];
+    
+            $curso = DB::fetchAll($query,$param);
+
+            if($curso){
+                $curso = $curso[0];
+            }
+
+            return view("relatorios.discentes.estabilidade.index", compact([
+                'dados',
+                'curso'
+            ]));
+        }
+
+        $query = " select C.codcur, C.nomcur, H.codhab, H.nomhab";
+        $query .= " from CURSOGR as C, HABILITACAOGR as H";
+        $query .= " where C.codclg = :codclg";
+        $query .= " and C.dtadtvcur is null";
+        $query .= " and H.codcur = C.codcur";
+        $query .= " and H.dtadtvhab is null";
+        $query .= " order by C.codcur, H.codhab asc";
+        $param = [
+            'codclg' => '45'
+        ];
+
+        $cursos = DB::fetchAll($query,$param);
+
+        return view("relatorios.discentes.estabilidade.create", compact([
+            'cursos'
+        ]));
     }
 }

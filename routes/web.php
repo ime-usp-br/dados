@@ -22,3 +22,4 @@ Route::get("/relatorios/cargadidatica/disciplinas", [RelatoriosController::class
 Route::get("/relatorios/cargadidatica/docentes", [RelatoriosController::class, "cargaDidaticaDocentes"])->name("relatorios.cargaDidaticaDocentes");
 Route::get("/relatorios/analisedebolsas/monitoria", [RelatoriosController::class, "analiseDeBolsasMonitoria"])->name("relatorios.analiseDeBolsasMonitoria");
 Route::get("/relatorios/discentes/ingressantes", [RelatoriosController::class, "discentesIngressantes"])->name("relatorios.discentesIngressantes");
+Route::get("/relatorios/discentes/estabilidade", [RelatoriosController::class, "discentesEstabilidade"])->name("relatorios.discentesEstabilidade");

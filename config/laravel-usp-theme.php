@@ -43,6 +43,10 @@ $submenu2 = [
         'text' => 'Ingressantes',
         'url' => 'relatorios/discentes/ingressantes',
     ],
+    [
+        'text' => 'Estabilidade',
+        'url' => 'relatorios/discentes/estabilidade',
+    ],
 ];
 
 $menu = [
