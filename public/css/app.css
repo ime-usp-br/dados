@@ -138,3 +138,8 @@ td,th{
 .ui-datepicker-trigger{
   right: 25px;
   position: relative;}
+
+
+.page-link  {
+  color: black !important;
+}

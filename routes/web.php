@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\RelatoriosController;
+use App\Http\Controllers\LogsController;
 
 /*
 |--------------------------------------------------------------------------
@@ -23,3 +24,4 @@ Route::get("/relatorios/cargadidatica/docentes", [RelatoriosController::class, "
 Route::get("/relatorios/analisedebolsas/monitoria", [RelatoriosController::class, "analiseDeBolsasMonitoria"])->name("relatorios.analiseDeBolsasMonitoria");
 Route::get("/relatorios/discentes/ingressantes", [RelatoriosController::class, "discentesIngressantes"])->name("relatorios.discentesIngressantes");
 Route::get("/relatorios/discentes/estabilidade", [RelatoriosController::class, "discentesEstabilidade"])->name("relatorios.discentesEstabilidade");
+Route::get("/logs", [LogsController::class, "index"])->name("logs.index");

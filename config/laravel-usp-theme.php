@@ -2,8 +2,8 @@
 
 $admin = [
     [
-        'text' => 'Reservado',
-        'url' => 'subitem1',
+        'text' => 'Logs',
+        'url' => '/logs',
         'can' => 'admin',
     ],
 ];

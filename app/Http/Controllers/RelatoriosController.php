@@ -12,6 +12,7 @@ use App\Models\Turma;
 use App\Models\Semestre;
 use App\Models\Docente;
 use App\Models\Horario;
+use App\Models\Log;
 
 class RelatoriosController extends Controller
 {
@@ -20,6 +21,12 @@ class RelatoriosController extends Controller
         if(!Auth::check()){
             return redirect(route("login"));
         }elseif(!Auth::user()->hasPermissionTo("RPT_CD_DOCENTE")){
+            Log::create([
+                "operacao"=>"RPT_CD_DOCENTE",
+                "status"=>"NEGADO",
+                "usuario"=>Auth::user()->id,
+                "descricao"=>$request->getClientIp()
+            ]);
             return abort(403);
         }
 
@@ -210,6 +217,14 @@ class RelatoriosController extends Controller
                 }
             }
             
+
+            Log::create([
+                "operacao"=>"RPT_CD_DOCENTE",
+                "status"=>"OK",
+                "usuario"=>Auth::user()->id,
+                "descricao"=>$request->getClientIp()
+            ]);
+
             return view("relatorios.cargaDidatica.docentes.index", compact([
                 "dados",
                 "departamento",
@@ -226,6 +241,12 @@ class RelatoriosController extends Controller
         if(!Auth::check()){
             return redirect(route("login"));
         }elseif(!Auth::user()->hasPermissionTo("RPT_CD_DISCIPLINA")){
+            Log::create([
+                "operacao"=>"RPT_CD_DISCIPLINA",
+                "status"=>"NEGADO",
+                "usuario"=>Auth::user()->id,
+                "descricao"=>$request->getClientIp()
+            ]);
             return abort(403);
         }
 
@@ -239,6 +260,13 @@ class RelatoriosController extends Controller
             $turmas = Turma::whereBelongsTo($semestre)->where("coddis", "like", $departamento."%")->get(); //supondo que as turmas ja existam(talvez n seja o caso)
             
             $turmas = $turmas->sortBy(['nivel','coddis','codtur']);
+
+            Log::create([
+                "operacao"=>"RPT_CD_DISCIPLINA",
+                "status"=>"OK",
+                "usuario"=>Auth::user()->id,
+                "descricao"=>$request->getClientIp()
+            ]);
 
             return view("relatorios.cargaDidatica.disciplinas.index", compact([
                 "turmas",
@@ -255,6 +283,12 @@ class RelatoriosController extends Controller
         if(!Auth::check()){
             return redirect(route("login"));
         }elseif(!Auth::user()->hasPermissionTo("RPT_MONITORIA")){
+            Log::create([
+                "operacao"=>"RPT_MONITORIA",
+                "status"=>"NEGADO",
+                "usuario"=>Auth::user()->id,
+                "descricao"=>$request->getClientIp()
+            ]);
             return abort(403);
         }
 
@@ -265,6 +299,13 @@ class RelatoriosController extends Controller
             $turmas = Turma::whereBelongsTo($semestre)->get(); //supondo que as turmas ja existam(talvez n seja o caso)
             
             $turmas = $turmas->sortBy(['nivel','coddis','codtur']);
+
+            Log::create([
+                "operacao"=>"RPT_MONITORIA",
+                "status"=>"OK",
+                "usuario"=>Auth::user()->id,
+                "descricao"=>$request->getClientIp()
+            ]);
 
             return view("relatorios.analiseDeBolsas.monitoria.index", compact([
                 "turmas",
@@ -281,6 +322,12 @@ class RelatoriosController extends Controller
         if(!Auth::check()){
             return redirect(route("login"));
         }elseif(!Auth::user()->hasPermissionTo("RPT_DIS_ING")){
+            Log::create([
+                "operacao"=>"RPT_DIS_ING",
+                "status"=>"NEGADO",
+                "usuario"=>Auth::user()->id,
+                "descricao"=>$request->getClientIp()
+            ]);
             return abort(403);
         }
 
@@ -328,6 +375,13 @@ class RelatoriosController extends Controller
 
             $ano = $validated["ano"];
 
+            Log::create([
+                "operacao"=>"RPT_DIS_ING",
+                "status"=>"OK",
+                "usuario"=>Auth::user()->id,
+                "descricao"=>$request->getClientIp()
+            ]);
+
             return view("relatorios.discentes.ingressantes.index", compact([
                 'alunos',
                 'curso',
@@ -359,6 +413,12 @@ class RelatoriosController extends Controller
         if(!Auth::check()){
             return redirect(route("login"));
         }elseif(!Auth::user()->hasPermissionTo("RPT_DIS_EST")){
+            Log::create([
+                "operacao"=>"RPT_DIS_ING",
+                "status"=>"NEGADO",
+                "usuario"=>Auth::user()->id,
+                "descricao"=>$request->getClientIp()
+            ]);
             return abort(403);
         }
 
@@ -430,6 +490,13 @@ class RelatoriosController extends Controller
             if($curso){
                 $curso = $curso[0];
             }
+
+            Log::create([
+                "operacao"=>"RPT_DIS_EST",
+                "status"=>"OK",
+                "usuario"=>Auth::user()->id,
+                "descricao"=>$request->getClientIp()
+            ]);
 
             return view("relatorios.discentes.estabilidade.index", compact([
                 'dados',
