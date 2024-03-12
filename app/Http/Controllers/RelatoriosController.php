@@ -19,6 +19,8 @@ class RelatoriosController extends Controller
     {
         if(!Auth::check()){
             return redirect(route("login"));
+        }elseif(!Auth::user()->hasPermissionTo("RPT_CD_DOCENTE")){
+            return abort(403);
         }
 
         $validated = $request->validated();
@@ -223,6 +225,8 @@ class RelatoriosController extends Controller
     {
         if(!Auth::check()){
             return redirect(route("login"));
+        }elseif(!Auth::user()->hasPermissionTo("RPT_CD_DISCIPLINA")){
+            return abort(403);
         }
 
         $validated = $request->validated();
@@ -250,6 +254,8 @@ class RelatoriosController extends Controller
     {
         if(!Auth::check()){
             return redirect(route("login"));
+        }elseif(!Auth::user()->hasPermissionTo("RPT_MONITORIA")){
+            return abort(403);
         }
 
         $validated = $request->validated();
@@ -274,6 +280,8 @@ class RelatoriosController extends Controller
     {
         if(!Auth::check()){
             return redirect(route("login"));
+        }elseif(!Auth::user()->hasPermissionTo("RPT_DIS_ING")){
+            return abort(403);
         }
 
         $validated = $request->validated();
@@ -350,6 +358,8 @@ class RelatoriosController extends Controller
     {
         if(!Auth::check()){
             return redirect(route("login"));
+        }elseif(!Auth::user()->hasPermissionTo("RPT_DIS_EST")){
+            return abort(403);
         }
 
         $validated = $request->validated();
