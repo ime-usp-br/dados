@@ -43,7 +43,7 @@
   <script>
     $(document).ready(function() {
         $('#table_logs').DataTable({
-            dom: 'Btp',
+            dom: 'Btlp',
             buttons: {
                 buttons:[{
                     extend: 'excel',
