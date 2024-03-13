@@ -27,7 +27,7 @@
                             <td>{{ $log->operacao }}</td>
                             <td>{{ $log->status }}</td>
                             <td>{{ $log->created_at }}</td>
-                            <td>{{ $log->usuario }}</td>
+                            <td>{{ $log->usuario->codpes." - ".$log->usuario->name }}</td>
                             <td>{{ $log->descricao }}</td>
                         </tr>
                     @endforeach

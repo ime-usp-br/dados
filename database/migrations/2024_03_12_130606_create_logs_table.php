@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string("operacao");
             $table->string("status");
-            $table->integer("usuario")->unsigned()->nullable();
+            $table->integer("usuario_id")->unsigned()->nullable();
             $table->string("descricao")->nullable();
             $table->timestamps();
         });

@@ -24,7 +24,7 @@ class RelatoriosController extends Controller
             Log::create([
                 "operacao"=>"RPT_CD_DOCENTE",
                 "status"=>"NEGADO",
-                "usuario"=>Auth::user()->id,
+                "usuario_id"=>Auth::user()->id,
                 "descricao"=>$request->getClientIp()
             ]);
             return abort(403);
@@ -221,7 +221,7 @@ class RelatoriosController extends Controller
             Log::create([
                 "operacao"=>"RPT_CD_DOCENTE",
                 "status"=>"OK",
-                "usuario"=>Auth::user()->id,
+                "usuario_id"=>Auth::user()->id,
                 "descricao"=>$request->getClientIp()
             ]);
 
@@ -244,7 +244,7 @@ class RelatoriosController extends Controller
             Log::create([
                 "operacao"=>"RPT_CD_DISCIPLINA",
                 "status"=>"NEGADO",
-                "usuario"=>Auth::user()->id,
+                "usuario_id"=>Auth::user()->id,
                 "descricao"=>$request->getClientIp()
             ]);
             return abort(403);
@@ -264,7 +264,7 @@ class RelatoriosController extends Controller
             Log::create([
                 "operacao"=>"RPT_CD_DISCIPLINA",
                 "status"=>"OK",
-                "usuario"=>Auth::user()->id,
+                "usuario_id"=>Auth::user()->id,
                 "descricao"=>$request->getClientIp()
             ]);
 
@@ -286,7 +286,7 @@ class RelatoriosController extends Controller
             Log::create([
                 "operacao"=>"RPT_MONITORIA",
                 "status"=>"NEGADO",
-                "usuario"=>Auth::user()->id,
+                "usuario_id"=>Auth::user()->id,
                 "descricao"=>$request->getClientIp()
             ]);
             return abort(403);
@@ -303,7 +303,7 @@ class RelatoriosController extends Controller
             Log::create([
                 "operacao"=>"RPT_MONITORIA",
                 "status"=>"OK",
-                "usuario"=>Auth::user()->id,
+                "usuario_id"=>Auth::user()->id,
                 "descricao"=>$request->getClientIp()
             ]);
 
@@ -325,7 +325,7 @@ class RelatoriosController extends Controller
             Log::create([
                 "operacao"=>"RPT_DIS_ING",
                 "status"=>"NEGADO",
-                "usuario"=>Auth::user()->id,
+                "usuario_id"=>Auth::user()->id,
                 "descricao"=>$request->getClientIp()
             ]);
             return abort(403);
@@ -378,7 +378,7 @@ class RelatoriosController extends Controller
             Log::create([
                 "operacao"=>"RPT_DIS_ING",
                 "status"=>"OK",
-                "usuario"=>Auth::user()->id,
+                "usuario_id"=>Auth::user()->id,
                 "descricao"=>$request->getClientIp()
             ]);
 
@@ -416,7 +416,7 @@ class RelatoriosController extends Controller
             Log::create([
                 "operacao"=>"RPT_DIS_ING",
                 "status"=>"NEGADO",
-                "usuario"=>Auth::user()->id,
+                "usuario_id"=>Auth::user()->id,
                 "descricao"=>$request->getClientIp()
             ]);
             return abort(403);
@@ -494,7 +494,7 @@ class RelatoriosController extends Controller
             Log::create([
                 "operacao"=>"RPT_DIS_EST",
                 "status"=>"OK",
-                "usuario"=>Auth::user()->id,
+                "usuario_id"=>Auth::user()->id,
                 "descricao"=>$request->getClientIp()
             ]);
 

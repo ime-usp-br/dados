@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\User;
 
 class Log extends Model
 {
@@ -12,7 +13,12 @@ class Log extends Model
     protected $fillable = [
         'operacao',
         'status',
-        'usuario',
+        'usuario_id',
         'descricao',
     ];
+
+    public function usuario()
+    {
+        return $this->belongsTo(User::class, "usuario_id");
+    }
 }

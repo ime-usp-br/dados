@@ -26,7 +26,7 @@ class LogSuccessfulLogout
         Log::create([
             "operacao"=>"LOGOUT",
             "status"=>"OK",
-            "usuario"=>$event->user->id,
+            "usuario_id"=>$event->user->id,
             "descricao"=>$this->request->getClientIp()
         ]);
     }
