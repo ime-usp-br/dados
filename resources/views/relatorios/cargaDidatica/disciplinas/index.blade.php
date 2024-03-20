@@ -8,7 +8,6 @@
     <div class="justify-content-center">
         <div class="col-md-12">
             <h1 class='text-center'>Relatório Carga Didática do {{$departamento}} por Disciplina</h1>
-            <h1 class='text-center mb-5'>{{$semestre->periodo}}° semestre de {{$semestre->ano}}</h1>
             
             @if(count($turmas) > 0)
 
@@ -20,6 +19,8 @@
                             <th class="text-center" rowspan="2" style="vertical-align: middle;">Sigla</th>
                             <th class="text-center" rowspan="2" style="vertical-align: middle;">Nome da disciplina</th>
                             <th class="text-center" rowspan="2" style="vertical-align: middle;">Turma</th>
+                            <th class="text-center" rowspan="2" style="vertical-align: middle;">Ano</th>
+                            <th class="text-center" rowspan="2" style="vertical-align: middle;">Semestre</th>
                             <th class="text-center" colspan="2" style="vertical-align: middle;">Créditos</th>
                             <th class="text-center" rowspan="2" style="vertical-align: middle;">Alunos matriculados</th>
                             <th class="text-center" rowspan="2" style="vertical-align: middle;">Horário</th>
@@ -41,6 +42,8 @@
                                     <td class="text-center" style="vertical-align: middle;">{{ $turma->coddis }}</td>
                                     <td class="text-center" style="vertical-align: middle;">{{ $turma->nomdis }}</td>
                                     <td class="text-center" style="vertical-align: middle;">{{ $turma->codtur }}</td>
+                                    <td class="text-center" style="vertical-align: middle;">{{ $turma->semestre->ano }}</td>
+                                    <td class="text-center" style="vertical-align: middle;">{{ $turma->semestre->periodo }}</td>
                                     <td class="text-center" style="vertical-align: middle;">{{ $turma->creaul }}</td>
                                     <td class="text-center" style="vertical-align: middle;">{{ $turma->cretrb }}</td>
                                     <td class="text-center" style="vertical-align: middle;">{{ $turma->nummtr }}</td>

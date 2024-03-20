@@ -2,7 +2,8 @@
 
 namespace App\Http\Controllers;
 use Illuminate\Http\Request;
-use App\Http\Requests\CargaDidaticaRequest;
+use App\Http\Requests\CargaDidaticaDisciplinaRequest;
+use App\Http\Requests\CargaDidaticaDocenteRequest;
 use App\Http\Requests\AnaliseDeBolsasMonitoriaRequest;
 use App\Http\Requests\DiscentesIngressantesRequest;
 use App\Http\Requests\DiscentesEstabilidadeRequest;
@@ -16,7 +17,7 @@ use App\Models\Log;
 
 class RelatoriosController extends Controller
 {
-    public function cargaDidaticaDocentes(CargaDidaticaRequest $request)
+    public function cargaDidaticaDocentes(CargaDidaticaDocenteRequest $request)
     {
         if(!Auth::check()){
             return redirect(route("login"));
@@ -236,7 +237,7 @@ class RelatoriosController extends Controller
         return view("relatorios.cargaDidatica.docentes.create");
     }
 
-    public function cargaDidaticaDisciplinas(CargaDidaticaRequest $request)
+    public function cargaDidaticaDisciplinas(CargaDidaticaDisciplinaRequest $request)
     {
         if(!Auth::check()){
             return redirect(route("login"));
@@ -252,12 +253,38 @@ class RelatoriosController extends Controller
 
         $validated = $request->validated();
         
-        if(isset($validated["departamento"]) and isset($validated["ano"]) and isset($validated["semestre"])){
+        if(isset($validated["departamento"]) and isset($validated["periodo_inicial"])){
             $codigoSetores = ["MAC"=>1664, "MAE"=>1665, "MAP"=>1666, "MAT"=>1667];
 
             $departamento = $validated["departamento"];
-            $semestre = Semestre::firstOrCreate(["ano"=>$validated["ano"],"periodo"=>$validated["semestre"]]);
-            $turmas = Turma::whereBelongsTo($semestre)->where("coddis", "like", $departamento."%")->get(); //supondo que as turmas ja existam(talvez n seja o caso)
+
+            $semestres_id = [];
+            $pi = substr($validated["periodo_inicial"], 4, 1);
+            $ai = substr($validated["periodo_inicial"], 0, 4);
+            $pf = ((isset($validated["periodo_final"])) ? substr($validated["periodo_final"], 4, 1) : $pi);
+            $af = ((isset($validated["periodo_final"])) ? substr($validated["periodo_final"], 0, 4) : $ai);
+
+            foreach(range($ai,$af) as $ano){
+                foreach([1,2] as $periodo){
+                    $semestre = null;
+                    if($ano == $ai){
+                        if($periodo >= $pi){
+                            $semestre = Semestre::where(["ano"=>$ano,"periodo"=>$periodo])->first();
+                        }
+                    }elseif($ano == $af){
+                        if($periodo <= $pf){
+                            $semestre = Semestre::where(["ano"=>$ano,"periodo"=>$periodo])->first();
+                        }
+                    }else{
+                        $semestre = Semestre::where(["ano"=>$ano,"periodo"=>$periodo])->first();
+                    }
+                    if($semestre){
+                        $semestres_id[] = $semestre->id;
+                    }
+                }
+            }
+
+            $turmas = Turma::whereIn("semestre_id", $semestres_id)->where("coddis", "like", $departamento."%")->get(); //supondo que as turmas ja existam(talvez n seja o caso)
             
             $turmas = $turmas->sortBy(['nivel','coddis','codtur']);
 
@@ -270,8 +297,7 @@ class RelatoriosController extends Controller
 
             return view("relatorios.cargaDidatica.disciplinas.index", compact([
                 "turmas",
-                "departamento",
-                "semestre"
+                "departamento"
             ]));
         }
 
