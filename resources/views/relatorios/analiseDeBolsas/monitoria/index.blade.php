@@ -25,7 +25,16 @@
                 $disciplinas = $disciplinasFiltradas->sortKeys()->toArray();
 
             ?>
-            @if(count($disciplinas) > 0)
+
+            <form method="GET" action="{{ route('relatorios.monitoriaPDF') }}" enctype='multipart/form-data'>
+                <input type="hidden" value="{{$semestre->ano}}" name="ano">
+                <input type="hidden" value="{{$semestre->periodo}}" name="semestre">
+                <button type="submit" class="btn btn-outline-dark mb-3">
+                    Sistema de Monitoria PDF
+                </button>
+            </form>
+
+            @if(count($disciplinas) > 0)            
                 @foreach($disciplinas as $coddis=>$nomdis)
                     <table id="table" class="table table-bordered" style="font-size:12px;">
                         <thead>

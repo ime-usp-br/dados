@@ -14,6 +14,7 @@ use App\Models\Semestre;
 use App\Models\Docente;
 use App\Models\Horario;
 use App\Models\Log;
+use GuzzleHttp\Client;
 
 class RelatoriosController extends Controller
 {
@@ -546,5 +547,42 @@ class RelatoriosController extends Controller
         return view("relatorios.discentes.estabilidade.create", compact([
             'cursos'
         ]));
+    }
+
+    public function downloadRelatorioSistemaMonitoria(AnaliseDeBolsasMonitoriaRequest $request)
+    {
+        if(!Auth::check()){
+            return redirect(route("login"));
+        }elseif(!Auth::user()->hasPermissionTo("RPT_MONITORIA")){
+            Log::create([
+                "operacao"=>"RPT_MONITORIA_PDF",
+                "status"=>"NEGADO",
+                "usuario_id"=>Auth::user()->id,
+                "descricao"=>$request->getClientIp()
+            ]);
+            return abort(403);
+        }
+
+        $validated = $request->validated();
+
+        $client = new Client();
+
+        $resposta = $client->request('GET', env("EXTERNAL_REPORT_URL"), 
+            [
+                "query" => [
+                    'token' => env("EXTERNAL_REPORT_TOKEN"), 
+                    "ano" => $validated["ano"],
+                    "periodo" => $validated["semestre"]
+                ]
+            ]);
+
+        $resposta = (string) $resposta->getBody();
+
+        $resposta = json_decode($resposta, true);
+
+        $bin = base64_decode($resposta["report"], true);
+
+        return response($bin)
+        ->header('Content-Type', 'application/pdf');
     }
 }
