@@ -26,11 +26,11 @@
 
             ?>
 
-            <form method="GET" action="{{ route('relatorios.monitoriaPDF') }}" enctype='multipart/form-data'>
+            <form target="_blank" method="GET" action="{{ route('relatorios.monitoriaPDF') }}" enctype='multipart/form-data'>
                 <input type="hidden" value="{{$semestre->ano}}" name="ano">
                 <input type="hidden" value="{{$semestre->periodo}}" name="semestre">
                 <button type="submit" class="btn btn-outline-dark mb-3">
-                    Sistema de Monitoria PDF
+                    Relatório de bolsas concedidas no período
                 </button>
             </form>
 
