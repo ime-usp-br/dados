@@ -8,7 +8,7 @@
     <div class="justify-content-center">
         <div class="col-md-12">
             <h1 class='text-center'>Relatório de Análise de Bolsas de Monitoria</h1>
-            <h1 class='text-center mb-5'>{{$semestre->periodo}}° semestre de {{$semestre->ano}}</h1>
+            <h1 class='text-center mb-5'>Carga didática dos departamentos no {{$semestre->periodo}}° semestre de {{$semestre->ano}}</h1>
 
             <?php 
                 $disciplinas = App\Models\Turma::whereBelongsTo($semestre)->get(['nomdis','coddis']);
