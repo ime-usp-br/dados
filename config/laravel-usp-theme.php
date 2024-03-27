@@ -12,40 +12,50 @@ $submenu2 = [
     [
         'type' => 'header',
         'text' => 'Carga Didática',
+        'can'=>'HEADER_CD'
     ],
     [
         'text' => 'Disciplinas',
         'url' => 'relatorios/cargadidatica/disciplinas',
+        'can'=>'RPT_CD_DISCIPLINA'
     ],
     [
         'text' => 'Docente',
         'url' => 'relatorios/cargadidatica/docentes',
+        'can'=>'RPT_CD_DOCENTE'
     ],
     [
         'type' => 'divider',
+        'can'=>'DIV_CD_MONITORIA'
     ],
     [
         'type' => 'header',
         'text' => 'Análise de bolsas',
+        'can'=>'HEADER_MONITORIA'
     ],
     [
         'text' => 'Monitoria',
         'url' => 'relatorios/analisedebolsas/monitoria',
+        'can'=>'RPT_MONITORIA'
     ],
     [
         'type' => 'divider',
+        'can'=>'DIV_MONITORIA_DIS'
     ],
     [
         'type' => 'header',
         'text' => 'Discentes',
+        'can'=>'HEADER_DIS'
     ],
     [
         'text' => 'Ingressantes',
         'url' => 'relatorios/discentes/ingressantes',
+        'can'=>'RPT_DIS_ING'
     ],
     [
         'text' => 'Estabilidade',
         'url' => 'relatorios/discentes/estabilidade',
+        'can'=>'RPT_DIS_EST'
     ],
 ];
 
