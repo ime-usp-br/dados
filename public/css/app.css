@@ -143,3 +143,9 @@ td,th{
 .page-link  {
   color: black !important;
 }
+
+
+div.dt-buttons{
+  position:relative;
+  float:left;
+}

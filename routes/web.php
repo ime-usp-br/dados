@@ -3,6 +3,8 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\RelatoriosController;
 use App\Http\Controllers\LogsController;
+use App\Http\Controllers\APIAcessoController;
+use App\Http\Controllers\NotaController;
 
 /*
 |--------------------------------------------------------------------------
@@ -25,4 +27,13 @@ Route::get("/relatorios/analisedebolsas/monitoria", [RelatoriosController::class
 Route::get("/relatorios/sistemamonitoriapdf/download", [RelatoriosController::class, "downloadRelatorioSistemaMonitoria"])->name("relatorios.monitoriaPDF");
 Route::get("/relatorios/discentes/ingressantes", [RelatoriosController::class, "discentesIngressantes"])->name("relatorios.discentesIngressantes");
 Route::get("/relatorios/discentes/estabilidade", [RelatoriosController::class, "discentesEstabilidade"])->name("relatorios.discentesEstabilidade");
+
 Route::get("/logs", [LogsController::class, "index"])->name("logs.index");
+
+Route::get("/api/acesso/individual", [APIAcessoController::class, "individual"])->name("acesso.individual");
+Route::get("/api/acesso/lote", [APIAcessoController::class, "lote"])->name("acesso.lote");
+Route::get("/api/acesso/ativo", [APIAcessoController::class, "ativo"])->name("acesso.ativo");
+
+
+Route::get('/notas/importar', [NotaController::class, 'importar']);
+Route::post('/notas/importar/csv', [NotaController::class, 'importar_csv']);

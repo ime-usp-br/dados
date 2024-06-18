@@ -8,6 +8,14 @@ $admin = [
     ],
 ];
 
+$submenu3 = [
+    [
+        'text' => 'Evolução',
+        'url' => '/notas/importar',
+        'can'=>'GR_EVOLUCAO'
+    ],
+];
+
 $submenu2 = [
     [
         'type' => 'header',
@@ -67,6 +75,11 @@ $menu = [
     [
         'text' => 'Relatórios',
         'submenu' => $submenu2,
+        'can' => 'user',
+    ],
+    [
+        'text' => 'Graduação',
+        'submenu' => $submenu3,
         'can' => 'user',
     ],
     [
