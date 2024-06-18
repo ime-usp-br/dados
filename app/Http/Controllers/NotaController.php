@@ -79,18 +79,10 @@ class NotaController extends Controller
                 "operacao"=>"GR_EVOLUCAO",
                 "status"=>"NEGADO",
                 "usuario_id"=>Auth::user()->id,
-                "descricao"=>$request->getClientIp()
+                "descricao"=>""
             ]);
             return abort(403);
         }
-
-
-        Log::create([
-            "operacao"=>"GR_EVOLUCAO",
-            "status"=>"OK",
-            "usuario_id"=>Auth::user()->id,
-            "descricao"=>$request->getClientIp()
-        ]);
 
         return view('notas.importar.index');
     }
