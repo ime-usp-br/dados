@@ -34,6 +34,20 @@ $submenu2 = [
     ],
     [
         'type' => 'divider',
+        'can'=>'DIV_CD_SCD'
+    ],
+    [
+        'type' => 'header',
+        'text' => 'Sem Carga Didática',
+        'can'=>'HEADER_SCD'
+    ],
+    [
+        'text' => 'Docente',
+        'url' => 'relatorios/semcargadidatica/docentes',
+        'can'=>'RPT_SCD_DOCENTES'
+    ],
+    [
+        'type' => 'divider',
         'can'=>'DIV_CD_MONITORIA'
     ],
     [

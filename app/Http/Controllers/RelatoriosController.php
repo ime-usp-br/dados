@@ -7,8 +7,10 @@ use App\Http\Requests\CargaDidaticaDocenteRequest;
 use App\Http\Requests\AnaliseDeBolsasMonitoriaRequest;
 use App\Http\Requests\DiscentesIngressantesRequest;
 use App\Http\Requests\DiscentesEstabilidadeRequest;
+use App\Http\Requests\DocenteSemCargaDidaticaRequest;
 use Illuminate\Support\Facades\Auth;
 use Uspdev\Replicado\DB;
+use Illuminate\Support\Facades\DB as DBFacade;
 use App\Models\Turma;
 use App\Models\Semestre;
 use App\Models\Docente;
@@ -584,5 +586,89 @@ class RelatoriosController extends Controller
 
         return response($bin)
         ->header('Content-Type', 'application/pdf');
+    }
+
+    public function semCargaDidaticaDocentes(DocenteSemCargaDidaticaRequest $request)
+    {
+        if(!Auth::check()){
+            return redirect(route("login"));
+        }elseif(!Auth::user()->hasPermissionTo("RPT_SCD_DOCENTES")){
+            Log::create([
+                "operacao"=>"RPT_SCD_DOCENTES",
+                "status"=>"NEGADO",
+                "usuario_id"=>Auth::user()->id,
+                "descricao"=>$request->getClientIp()
+            ]);
+            return abort(403);
+        }
+
+        $validated = $request->validated();
+
+        if(isset($validated["ano"]) and isset($validated["periodo"])){
+
+            $semestre = Semestre::where('ano', $validated["ano"])->where('periodo', $validated["periodo"])->first();
+
+            $turmasSemestreIds = $semestre->turmas()->pluck('id');
+
+            $docentesComTurmasIds = DBFacade::table('docente_turma')
+                                        ->whereIn('turma_id', $turmasSemestreIds)
+                                        ->pluck('docente_id');
+
+            $docentes = Docente::whereNotIn('id', $docentesComTurmasIds)->get();
+
+
+            $query = " SELECT V.codpes, V.dtainivin, V.dtafimvin, V.sitatl, V.dtainisitatl FROM VINCULOPESSOAUSP as V";
+
+            $totaldocentes = $docentes->count();
+
+            $query .= " where V.codpes in (";
+            foreach($docentes as $index=>$docente){
+                $query .= $docente->codpes;
+                if($index != $totaldocentes - 1){
+                    $query .= ",";
+                }
+            }
+            $query .= ")";
+            $query .= " and V.tipfnc = :tipfnc";
+            $query .= " and V.codund = :codund";
+            $param = [
+                'codund' => '45',
+                'tipfnc' => 'Docente'
+            ];
+    
+            $respostas = DB::fetchAll($query,$param);
+
+            $ativos = [];
+            $dtaref = $validated["ano"] . ($validated["periodo"] == 1 ? '-04-01' : '-09-01');
+            foreach($respostas as $docente){
+                $dtainivin = explode(" ",$docente['dtainivin'])[0];
+                if($docente['dtafimvin']){
+                    $dtafimvin = explode(" ",$docente['dtafimvin'])[0];
+                }else{
+                    $dtafimvin = explode(" ",$docente['dtainisitatl'])[0];
+                }
+                if($dtainivin <= $dtaref and $dtafimvin >= $dtaref){
+                    $ativos[] = $docente["codpes"];
+                }
+            }
+            
+            $docentes = $docentes->filter(function($docente)use($ativos){
+                return in_array($docente->codpes, $ativos);
+            });
+
+            return view("relatorios.semCargaDidatica.docentes.index", compact([
+                "docentes",
+                "semestre"
+            ]));    
+        }
+
+        Log::create([
+            "operacao"=>"RPT_SCD_DOCENTES",
+            "status"=>"OK",
+            "usuario_id"=>Auth::user()->id,
+            "descricao"=>$request->getClientIp()
+        ]);
+
+        return view("relatorios.semCargaDidatica.docentes.create");
     }
 }

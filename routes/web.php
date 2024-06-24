@@ -21,6 +21,7 @@ Route::get('/', function () {
     return view('main');
 })->name("home");
 
+Route::get("/relatorios/semcargadidatica/docentes", [RelatoriosController::class, "semCargaDidaticaDocentes"])->name("relatorios.semCargaDidaticaDocentes");
 Route::get("/relatorios/cargadidatica/disciplinas", [RelatoriosController::class, "cargaDidaticaDisciplinas"])->name("relatorios.cargaDidaticaDisciplinas");
 Route::get("/relatorios/cargadidatica/docentes", [RelatoriosController::class, "cargaDidaticaDocentes"])->name("relatorios.cargaDidaticaDocentes");
 Route::get("/relatorios/analisedebolsas/monitoria", [RelatoriosController::class, "analiseDeBolsasMonitoria"])->name("relatorios.analiseDeBolsasMonitoria");
