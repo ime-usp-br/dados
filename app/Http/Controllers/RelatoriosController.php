@@ -616,7 +616,6 @@ class RelatoriosController extends Controller
 
             $docentes = Docente::whereNotIn('id', $docentesComTurmasIds)->get();
 
-
             $query = " SELECT V.codpes, V.dtainivin, V.dtafimvin, V.sitatl, V.dtainisitatl FROM VINCULOPESSOAUSP as V";
 
             $totaldocentes = $docentes->count();
@@ -637,7 +636,7 @@ class RelatoriosController extends Controller
             ];
     
             $respostas = DB::fetchAll($query,$param);
-
+            
             $ativos = [];
             $dtaref = $validated["ano"] . ($validated["periodo"] == 1 ? '-04-01' : '-09-01');
             foreach($respostas as $docente){
@@ -647,7 +646,9 @@ class RelatoriosController extends Controller
                 }else{
                     $dtafimvin = explode(" ",$docente['dtainisitatl'])[0];
                 }
-                if($dtainivin <= $dtaref and $dtafimvin >= $dtaref){
+                if($docente["sitatl"]=="A"){
+                    $ativos[] = $docente["codpes"];
+                }elseif($dtainivin <= $dtaref and $dtafimvin >= $dtaref){
                     $ativos[] = $docente["codpes"];
                 }
             }
