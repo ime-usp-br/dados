@@ -28,8 +28,13 @@ $submenu2 = [
         'can'=>'RPT_CD_DISCIPLINA'
     ],
     [
-        'text' => 'Docente',
+        'text' => 'Docentes',
         'url' => 'relatorios/cargadidatica/docentes',
+        'can'=>'RPT_CD_DOCENTE'
+    ],
+    [
+        'text' => 'Por Docente',
+        'url' => 'relatorios/cargadidatica/pordocente',
         'can'=>'RPT_CD_DOCENTE'
     ],
     [

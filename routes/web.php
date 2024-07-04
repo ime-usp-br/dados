@@ -5,6 +5,7 @@ use App\Http\Controllers\RelatoriosController;
 use App\Http\Controllers\LogsController;
 use App\Http\Controllers\APIAcessoController;
 use App\Http\Controllers\NotaController;
+use App\Http\Controllers\DocenteController;
 
 /*
 |--------------------------------------------------------------------------
@@ -24,6 +25,7 @@ Route::get('/', function () {
 Route::get("/relatorios/semcargadidatica/docentes", [RelatoriosController::class, "semCargaDidaticaDocentes"])->name("relatorios.semCargaDidaticaDocentes");
 Route::get("/relatorios/cargadidatica/disciplinas", [RelatoriosController::class, "cargaDidaticaDisciplinas"])->name("relatorios.cargaDidaticaDisciplinas");
 Route::get("/relatorios/cargadidatica/docentes", [RelatoriosController::class, "cargaDidaticaDocentes"])->name("relatorios.cargaDidaticaDocentes");
+Route::get("/relatorios/cargadidatica/pordocente", [RelatoriosController::class, "cargaDidaticaPorDocente"])->name("relatorios.cargaDidaticaPorDocente");
 Route::get("/relatorios/analisedebolsas/monitoria", [RelatoriosController::class, "analiseDeBolsasMonitoria"])->name("relatorios.analiseDeBolsasMonitoria");
 Route::get("/relatorios/sistemamonitoriapdf/download", [RelatoriosController::class, "downloadRelatorioSistemaMonitoria"])->name("relatorios.monitoriaPDF");
 Route::get("/relatorios/discentes/ingressantes", [RelatoriosController::class, "discentesIngressantes"])->name("relatorios.discentesIngressantes");
@@ -38,3 +40,5 @@ Route::get("/api/acesso/ativo", [APIAcessoController::class, "ativo"])->name("ac
 
 Route::get('/notas/importar', [NotaController::class, 'importar']);
 Route::post('/notas/importar/csv', [NotaController::class, 'importar_csv']);
+
+Route::get('/docente/consulta', [DocenteController::class, 'consulta'])->name("docente.consulta");

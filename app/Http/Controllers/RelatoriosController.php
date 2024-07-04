@@ -8,6 +8,7 @@ use App\Http\Requests\AnaliseDeBolsasMonitoriaRequest;
 use App\Http\Requests\DiscentesIngressantesRequest;
 use App\Http\Requests\DiscentesEstabilidadeRequest;
 use App\Http\Requests\DocenteSemCargaDidaticaRequest;
+use App\Http\Requests\CargaDidaticaPorDocenteRequest;
 use Illuminate\Support\Facades\Auth;
 use Uspdev\Replicado\DB;
 use Illuminate\Support\Facades\DB as DBFacade;
@@ -671,5 +672,70 @@ class RelatoriosController extends Controller
         ]);
 
         return view("relatorios.semCargaDidatica.docentes.create");
+    }
+
+
+    public function cargaDidaticaPorDocente(CargaDidaticaPorDocenteRequest $request)
+    {
+        if(!Auth::check()){
+            return redirect(route("login"));
+        }elseif(!Auth::user()->hasPermissionTo("RPT_CDP_DOCENTE")){
+            Log::create([
+                "operacao"=>"RPT_CDP_DOCENTE",
+                "status"=>"NEGADO",
+                "usuario_id"=>Auth::user()->id,
+                "descricao"=>$request->getClientIp()
+            ]);
+            return abort(403);
+        }
+
+        $validated = $request->validated();
+        
+        if(isset($validated["codpes"]) and isset($validated["periodoInicial"]) and isset($validated["periodoFinal"])){
+            $docente = Docente::where("codpes",$validated["codpes"])->first();
+
+            $turmas = $docente->turmas;
+
+            $periodo1 = substr($validated["periodoInicial"], 4, 1);
+            $ano1 = substr($validated["periodoInicial"], 0, 4);
+            $periodo2 = ((isset($validated["periodoFinal"])) ? substr($validated["periodoFinal"], 4, 1) : $pi);
+            $ano2 = ((isset($validated["periodoFinal"])) ? substr($validated["periodoFinal"], 0, 4) : $ai);
+            
+            $semestres = Semestre::where(function ($query) use ($ano1, $periodo1, $ano2, $periodo2) {
+                $query->where(function ($subQuery) use ($ano1, $periodo1) {
+                    $subQuery->where('ano', '>', $ano1)
+                                ->orWhere(function ($innerQuery) use ($ano1, $periodo1) {
+                                    $innerQuery->where('ano', $ano1)->where('periodo', '>=', $periodo1);
+                                });
+                })->where(function ($subQuery) use ($ano2, $periodo2) {
+                    $subQuery->where('ano', '<', $ano2)
+                                ->orWhere(function ($innerQuery) use ($ano2, $periodo2) {
+                                    $innerQuery->where('ano', $ano2)->where('periodo', '<=', $periodo2);
+                                });
+                });
+            })->pluck('id')->toArray();
+
+            $turmas = $turmas->filter(function($turma)use($semestres){
+                return in_array($turma->semestre_id, $semestres);
+            });           
+
+            $turmas = $turmas->sortByDesc(function ($turma) {
+                return sprintf('%04d-%02d', $turma->semestre->ano, $turma->semestre->periodo);
+            });
+
+            Log::create([
+                "operacao"=>"RPT_CDP_DOCENTE",
+                "status"=>"OK",
+                "usuario_id"=>Auth::user()->id,
+                "descricao"=>$request->getClientIp()
+            ]);
+
+            return view("relatorios.cargaDidatica.porDocente.index", compact([
+                "turmas",
+                "docente"
+            ]));
+        }
+
+        return view("relatorios.cargaDidatica.porDocente.create");
     }
 }
