@@ -34,8 +34,11 @@ Route::get("/relatorios/discentes/estabilidade", [RelatoriosController::class, "
 Route::get("/logs", [LogsController::class, "index"])->name("logs.index");
 
 Route::get("/api/acesso/individual", [APIAcessoController::class, "individual"])->name("acesso.individual");
-Route::get("/api/acesso/lote", [APIAcessoController::class, "lote"])->name("acesso.lote");
 Route::get("/api/acesso/ativo", [APIAcessoController::class, "ativo"])->name("acesso.ativo");
+Route::get("/api/acesso/lote/pos", [APIAcessoController::class, "lotePos"])->name("acesso.lote.pos");
+Route::get("/api/acesso/lote/grad", [APIAcessoController::class, "loteGrad"])->name("acesso.lote.grad");
+Route::get("/api/acesso/lote/func", [APIAcessoController::class, "loteFunc"])->name("acesso.lote.func");
+Route::get("/api/acesso/lote/doc", [APIAcessoController::class, "loteDoc"])->name("acesso.lote.doc");
 
 
 Route::get('/notas/importar', [NotaController::class, 'importar']);
