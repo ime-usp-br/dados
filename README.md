@@ -1,14 +1,20 @@
 # Documentação da API de Acesso de Crachás do IME-USP
 ## Introdução
 Esta API foi desenvolvida em Laravel para fornecer informações de crachás de acesso às portas do prédio da Computação no Instituto de Matemática e Estatística da Universidade de São Paulo (IME-USP). A API foi testada utilizando a biblioteca `GuzzleHttp`.
+
 ## Endpoints e Rotas
 ### 1. Consulta individual de crachá
+
 **Endpoint:** `/api/acesso/individual`
+
 **Tipo de Requisição:** GET
+
 **Parâmetros:**
 - `codpes` (obrigatório): Código do funcionário/estudante.
+
 **Headers:**
 - `Authorization`: Bearer token de acesso.
+
 **Exemplo de Requisição com GuzzleHttp:**
 ```php
 use GuzzleHttp\Client;
@@ -22,13 +28,19 @@ $response = $client->request('GET', 'https://dados.ime.usp.br/api/acesso/individ
 ]);
 $body = (string) $response->getBody();
 ```
+
 ### 2. Verificação de crachá ativo
+
 **Endpoint:** `/api/acesso/ativo`
+
 **Tipo de Requisição:** GET
+
 **Parâmetros:**
 - `numserchi` (obrigatório): Número do crachá.
+
 **Headers:**
 - `Authorization`: Bearer token de acesso.
+
 **Exemplo de Requisição com GuzzleHttp:**
 ```php
 use GuzzleHttp\Client;
@@ -42,14 +54,20 @@ $response = $client->request('GET', 'https://dados.ime.usp.br/api/acesso/ativo',
 ]);
 $body = (string) $response->getBody();
 ```
+
 ### 3. Consulta de crachás de alunos de graduação
+
 **Endpoint:** `/api/acesso/lote/grad`
+
 **Tipo de Requisição:** GET
+
 **Parâmetros:**
 - `codcur` (obrigatório): Código do curso.
 - `anoing` (obrigatório): Ano de ingresso.
+
 **Headers:**
 - `Authorization`: Bearer token de acesso.
+
 **Exemplo de Requisição com GuzzleHttp:**
 ```php
 use GuzzleHttp\Client;
@@ -63,13 +81,19 @@ $response = $client->request('GET', 'https://dados.ime.usp.br/api/acesso/lote/gr
 ]);
 $body = (string) $response->getBody();
 ```
+
 ### 4. Consulta de crachás de alunos de pós-graduação
+
 **Endpoint:** `/api/acesso/lote/pos`
+
 **Tipo de Requisição:** GET
+
 **Parâmetros:**
 - `codare` (obrigatório): Código da área.
+
 **Headers:**
 - `Authorization`: Bearer token de acesso.
+
 **Exemplo de Requisição com GuzzleHttp:**
 ```php
 use GuzzleHttp\Client;
@@ -83,13 +107,19 @@ $response = $client->request('GET', 'https://dados.ime.usp.br/api/acesso/lote/po
 ]);
 $body = (string) $response->getBody();
 ```
+
 ### 5. Consulta de crachás de docentes
+
 **Endpoint:** `/api/acesso/lote/doc`
+
 **Tipo de Requisição:** GET
+
 **Parâmetros:**
 - `codset` (obrigatório): Código do setor.
+
 **Headers:**
 - `Authorization`: Bearer token de acesso.
+
 **Exemplo de Requisição com GuzzleHttp:**
 ```php
 use GuzzleHttp\Client;
@@ -103,11 +133,16 @@ $response = $client->request('GET', 'https://dados.ime.usp.br/api/acesso/lote/do
 ]);
 $body = (string) $response->getBody();
 ```
+
 ### 6. Consulta de crachás de funcionários
+
 **Endpoint:** `/api/acesso/lote/func`
+
 **Tipo de Requisição:** GET
+
 **Headers:**
 - `Authorization`: Bearer token de acesso.
+
 **Exemplo de Requisição com GuzzleHttp:**
 ```php
 use GuzzleHttp\Client;
