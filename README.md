@@ -1,66 +1,181 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Documentação da API de Acesso de Crachás do IME-USP
+## Introdução
+Esta API foi desenvolvida em Laravel para fornecer informações de crachás de acesso às portas do prédio da Computação no Instituto de Matemática e Estatística da Universidade de São Paulo (IME-USP). A API foi testada utilizando a biblioteca `GuzzleHttp`.
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+## Endpoints e Rotas
+### 1. Consulta individual de crachá
 
-## About Laravel
+**Endpoint:** `/api/acesso/individual`
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+**Tipo de Requisição:** GET
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+**Parâmetros:**
+- `codpes` (obrigatório): Código do funcionário/estudante.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+**Headers:**
+- `Authorization`: Bearer token de acesso.
 
-## Learning Laravel
+**Exemplo de Requisição com GuzzleHttp:**
+```php
+use GuzzleHttp\Client;
+$client = new Client();
+$headers = [
+'Authorization' => 'Bearer YOUR_API_TOKEN',
+];
+$response = $client->request('GET', 'https://dados.ime.usp.br/api/acesso/individual', [
+'headers' => $headers,
+'query' => ['codpes' => '1234567']
+]);
+$body = (string) $response->getBody();
+```
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+### 2. Verificação de crachá ativo
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+**Endpoint:** `/api/acesso/ativo`
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+**Tipo de Requisição:** GET
 
-## Laravel Sponsors
+**Parâmetros:**
+- `numserchi` (obrigatório): Número do crachá.
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+**Headers:**
+- `Authorization`: Bearer token de acesso.
 
-### Premium Partners
+**Exemplo de Requisição com GuzzleHttp:**
+```php
+use GuzzleHttp\Client;
+$client = new Client();
+$headers = [
+'Authorization' => 'Bearer YOUR_API_TOKEN',
+];
+$response = $client->request('GET', 'https://dados.ime.usp.br/api/acesso/ativo', [
+'headers' => $headers,
+'query' => ['numserchi' => '123456']
+]);
+$body = (string) $response->getBody();
+```
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+### 3. Consulta de crachás de alunos de graduação
 
-## Contributing
+**Endpoint:** `/api/acesso/lote/grad`
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+**Tipo de Requisição:** GET
 
-## Code of Conduct
+**Parâmetros:**
+- `codcur` (obrigatório): Código do curso.
+- `anoing` (obrigatório): Ano de ingresso.
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+**Headers:**
+- `Authorization`: Bearer token de acesso.
 
-## Security Vulnerabilities
+**Exemplo de Requisição com GuzzleHttp:**
+```php
+use GuzzleHttp\Client;
+$client = new Client();
+$headers = [
+'Authorization' => 'Bearer YOUR_API_TOKEN',
+];
+$response = $client->request('GET', 'https://dados.ime.usp.br/api/acesso/lote/grad', [
+'headers' => $headers,
+'query' => ['codcur' => '45031', 'anoing' => '2020']
+]);
+$body = (string) $response->getBody();
+```
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+### 4. Consulta de crachás de alunos de pós-graduação
 
-## License
+**Endpoint:** `/api/acesso/lote/pos`
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+**Tipo de Requisição:** GET
+
+**Parâmetros:**
+- `codare` (obrigatório): Código da área.
+
+**Headers:**
+- `Authorization`: Bearer token de acesso.
+
+**Exemplo de Requisição com GuzzleHttp:**
+```php
+use GuzzleHttp\Client;
+$client = new Client();
+$headers = [
+'Authorization' => 'Bearer YOUR_API_TOKEN',
+];
+$response = $client->request('GET', 'https://dados.ime.usp.br/api/acesso/lote/pos', [
+'headers' => $headers,
+'query' => ['codare' => '45131']
+]);
+$body = (string) $response->getBody();
+```
+
+### 5. Consulta de crachás de docentes
+
+**Endpoint:** `/api/acesso/lote/doc`
+
+**Tipo de Requisição:** GET
+
+**Parâmetros:**
+- `codset` (obrigatório): Código do setor.
+
+**Headers:**
+- `Authorization`: Bearer token de acesso.
+
+**Exemplo de Requisição com GuzzleHttp:**
+```php
+use GuzzleHttp\Client;
+$client = new Client();
+$headers = [
+'Authorization' => 'Bearer YOUR_API_TOKEN',
+];
+$response = $client->request('GET', 'https://dados.ime.usp.br/api/acesso/lote/doc', [
+'headers' => $headers,
+'query' => ['codset' => '1665']
+]);
+$body = (string) $response->getBody();
+```
+
+### 6. Consulta de crachás de funcionários
+
+**Endpoint:** `/api/acesso/lote/func`
+
+**Tipo de Requisição:** GET
+
+**Headers:**
+- `Authorization`: Bearer token de acesso.
+
+**Exemplo de Requisição com GuzzleHttp:**
+```php
+use GuzzleHttp\Client;
+$client = new Client();
+$headers = [
+'Authorization' => 'Bearer YOUR_API_TOKEN',
+];
+$response = $client->request('GET', 'https://dados.ime.usp.br/api/acesso/lote/func', [
+'headers' => $headers
+]);
+$body = (string) $response->getBody();
+```
+## Informações adicionais
+### Código dos Cursos de Graduação e Nomes
+- 45031 - Matemática - Bacharelado (Integral)
+- 45052 - Bacharelado em Ciência da Computação (Integral)
+- 45062 - Estatística - Bacharelado (Integral)
+- 45042 - Matemática Aplicada - Bacharelado (Integral)
+- 45070 - Bacharelado em Matemática Aplicada e Computacional (Noturno)
+- 45024 - Matemática - Licenciatura (Matutino)
+- 45024 - Matemática - Licenciatura (Noturno)
+
+### Código das Áreas da Pós-Graduação e Nomes
+- 45131 - Matemática
+- 45132 - Matemática Aplicada
+- 45134 - Ciência da Computação
+- 45499 - Instituto de Matemática e Estatística
+- 45133 - Probabilidade e Estatística
+- 45135 - Ensino de Matemática
+
+### Código dos Setores e Nomes
+- 1664 - Ciência da Computação
+- 1665 - Estatística
+- 1666 - Matemática Aplicada
+- 1667 - Matemática
+
