@@ -391,7 +391,7 @@ class RelatoriosController extends Controller
             $query .= " and C.dtadtvcur is null";
             $query .= " and H.codcur = :codcur";
             $query .= " and H.codhab = :codhab";
-            $query .= " and H.dtadtvhab is null";
+            #$query .= " and H.dtadtvhab is null";
             $param = [
                 'codcur' => $codcur,
                 'codhab' => $codhab,
@@ -424,7 +424,7 @@ class RelatoriosController extends Controller
         $query .= " where C.codclg = :codclg";
         $query .= " and C.dtadtvcur is null";
         $query .= " and H.codcur = C.codcur";
-        $query .= " and H.dtadtvhab is null";
+        #$query .= " and H.dtadtvhab is null";
         $query .= " order by C.codcur, H.codhab asc";
         $param = [
             'codclg' => '45'
