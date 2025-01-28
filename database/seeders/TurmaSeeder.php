@@ -110,7 +110,7 @@ class TurmaSeeder extends Seeder
                             $turma->docentes()->attach($docente);
                         }else{
                             if(in_array($dh["codset"],[1664,1665,1666,1666])){
-                                $docente = Docente::create([
+                                $docente = Docente::firstOrCreate([
                                     "nompes" => $dh["nompes"],
                                     "codpes" => $dh["codpes"],
                                     "codset" => $dh["codset"],
@@ -122,7 +122,7 @@ class TurmaSeeder extends Seeder
                                 if($docente){
                                     $turma->docentes()->attach($docente);
                                 }else{
-                                    $docente = Docente::create([
+                                    $docente = Docente::firstOrCreate([
                                         "nompes" => $dh["nompes"],
                                         "codpes" => $dh["codpes"],
                                         "codset" => $dh["codset"],
@@ -249,7 +249,7 @@ class TurmaSeeder extends Seeder
                             $turma->docentes()->attach($docente);
                         }else{
                             if(in_array($r["codset"],[1664,1665,1666,1666])){
-                                $docente = Docente::create([
+                                $docente = Docente::firstOrCreate([
                                     "nompes" => $r["nompes"],
                                     "codpes" => $r["codpes"],
                                     "codset" => $r["codset"],
@@ -261,7 +261,7 @@ class TurmaSeeder extends Seeder
                                 if($docente){
                                     $turma->docentes()->attach($docente);
                                 }else{
-                                    $docente = Docente::create([
+                                    $docente = Docente::firstOrCreate([
                                         "nompes" => $r["nompes"],
                                         "codpes" => $r["codpes"],
                                         "codset" => $r["codset"],
