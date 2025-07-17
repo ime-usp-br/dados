@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Artisan;
 
 class DatabaseSeeder extends Seeder
 {
@@ -11,10 +12,12 @@ class DatabaseSeeder extends Seeder
     {
         $this->call([
             PermissionSeeder::class,
-            SemestreSeeder::class,
-            DocenteSeeder::class,
-            TurmaSeeder::class,
-            DobradinhaSeeder::class
+        ]);
+        
+        Artisan::call('app:sync-replicado-data');
+
+        $this->call([
+            DobradinhaSeeder::class,
         ]);
     }
 }
