@@ -23,7 +23,7 @@ class CargaDidaticaDisciplinaRequest extends FormRequest
     {
         $periodo_max = date("Y") . ((date("m") < 7) ? "1" : "2");
         $rules = [
-            'departamento' => 'nullable|in:MAT,MAC,MAP,MAE',
+            'departamento' => 'nullable|in:MAT,MAC,MAP,MAE,TODOS',
             'periodo_inicial' => 'nullable|numeric|max:'.$periodo_max.'|min:20001',
             'periodo_final' => 'nullable|numeric|max:'.$periodo_max.'|gt:periodo_inicial',
         ];

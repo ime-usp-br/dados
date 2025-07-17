@@ -7,6 +7,7 @@
             id="departamento" style="width:150px"
         >
             <option value="" selected></option>
+            <option value="TODOS">Todos os departamentos</option>
 
             @foreach ([
                 'MAT',

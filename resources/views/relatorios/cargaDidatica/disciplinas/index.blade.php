@@ -7,7 +7,7 @@
 <div id="layout_conteudo">
     <div class="justify-content-center">
         <div class="col-md-12">
-            <h1 class='text-center'>Relatório Carga Didática do {{$departamento}} por Disciplina</h1>
+            <h1 class='text-center'>Relatório Carga Didática @if($departamento == 'TODOS')de Todos os Departamentos @else do {{$departamento}} @endif por Disciplina</h1>
             
             @if(count($turmas) > 0)
 

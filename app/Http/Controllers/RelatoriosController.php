@@ -288,7 +288,16 @@ class RelatoriosController extends Controller
                 }
             }
 
-            $turmas = Turma::whereIn("semestre_id", $semestres_id)->where("coddis", "like", $departamento."%")->get(); //supondo que as turmas ja existam(talvez n seja o caso)
+            if($departamento == "TODOS"){
+                $turmas = Turma::whereIn("semestre_id", $semestres_id)->where(function($query) {
+                    $query->where("coddis", "like", "MAC%")
+                          ->orWhere("coddis", "like", "MAE%")
+                          ->orWhere("coddis", "like", "MAP%")
+                          ->orWhere("coddis", "like", "MAT%");
+                })->get();
+            } else {
+                $turmas = Turma::whereIn("semestre_id", $semestres_id)->where("coddis", "like", $departamento."%")->get();
+            }
             
             $turmas = $turmas->sortBy(['nivel','coddis','codtur']);
 
