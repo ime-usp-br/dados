@@ -32,7 +32,7 @@
             <option value="" selected></option>
 
             @foreach (range(date("Y"), 2000) as $ano)
-                @if(!($ano == date("Y") and date("m") < 7))
+                @if(!($ano == date("Y") and date("m") < 6))
                     <option value="{{ $ano.'2' }}">{{ $ano }} - 2° Semestre</option>
                 @endif
                 <option value="{{ $ano.'1' }}">{{ $ano }} - 1° Semestre</option>
@@ -52,7 +52,7 @@
             <option value="" selected></option>
 
             @foreach (range(date("Y"), 2000) as $ano)
-                @if(!($ano == date("Y") and date("m") < 7))
+                @if(!($ano == date("Y") and date("m") < 6))
                     <option value="{{ $ano.'2' }}">{{ $ano }} - 2° Semestre</option>
                 @endif
                 <option value="{{ $ano.'1' }}">{{ $ano }} - 1° Semestre</option>

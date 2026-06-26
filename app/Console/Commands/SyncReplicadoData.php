@@ -76,7 +76,7 @@ class SyncReplicadoData extends Command
         $this->line('Verificando e sincronizando a lista de semestres...');
         $anoAtual = now()->format("Y");
         $mes = now()->format("m");
-        $periodoAtual = ($mes >= 1 && $mes <= 6) ? 1 : 2;
+        $periodoAtual = ($mes >= 1 && $mes <= 5) ? 1 : 2;
 
         for ($ano = 2000; $ano <= $anoAtual; $ano++) {
             $periodos = [1];
