@@ -131,6 +131,31 @@ class APIAcessoController extends Controller
         ]);
     }
 
+    public function lotePdoc(Request $request)
+    {
+        $token = $request->header('Authorization');
+        if($token != "Bearer ".env("API_ACESSO_TOKEN")){
+            return response()->json([
+                "status"=>"403",
+                "message"=>"Token não confere!"
+            ]);
+        }
+
+        $query = " select distinct VP.codpes, CC.numserchi";
+        $query .= " from VINCULOPESSOAUSP as VP, CATR_CRACHA as CC";
+        $query .= " where VP.codund = 45";
+        $query .= " and VP.tipvin = 'ALUNOPD'";
+        $query .= " and VP.sitatl = 'A'";
+        $query .= " and CC.codpescra = VP.codpes";
+
+        $respostas = DB::fetchAll($query);
+
+        return response()->json([
+            "status"=>200,
+            "message"=>$respostas
+        ]);
+    }
+
     public function loteDoc(Request $request)
     {
         $token = $request->header('Authorization');

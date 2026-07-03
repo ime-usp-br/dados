@@ -39,6 +39,7 @@ Route::get("/api/acesso/lote/pos", [APIAcessoController::class, "lotePos"])->nam
 Route::get("/api/acesso/lote/grad", [APIAcessoController::class, "loteGrad"])->name("acesso.lote.grad");
 Route::get("/api/acesso/lote/func", [APIAcessoController::class, "loteFunc"])->name("acesso.lote.func");
 Route::get("/api/acesso/lote/doc", [APIAcessoController::class, "loteDoc"])->name("acesso.lote.doc");
+Route::get("/api/acesso/lote/pdoc", [APIAcessoController::class, "lotePdoc"])->name("acesso.lote.pdoc");
 
 
 Route::get('/notas/importar', [NotaController::class, 'importar']);

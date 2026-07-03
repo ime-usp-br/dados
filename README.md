@@ -155,6 +155,28 @@ $response = $client->request('GET', 'https://dados.ime.usp.br/api/acesso/lote/fu
 ]);
 $body = (string) $response->getBody();
 ```
+
+### 7. Consulta de crachás de pós-doutorandos
+
+**Endpoint:** `/api/acesso/lote/pdoc`
+
+**Tipo de Requisição:** GET
+
+**Headers:**
+- `Authorization`: Bearer token de acesso.
+
+**Exemplo de Requisição com GuzzleHttp:**
+```php
+use GuzzleHttp\Client;
+$client = new Client();
+$headers = [
+'Authorization' => 'Bearer YOUR_API_TOKEN',
+];
+$response = $client->request('GET', 'https://dados.ime.usp.br/api/acesso/lote/pdoc', [
+'headers' => $headers
+]);
+$body = (string) $response->getBody();
+```
 ## Informações adicionais
 ### Código dos Cursos de Graduação e Nomes
 - 45031 - Matemática - Bacharelado (Integral)
