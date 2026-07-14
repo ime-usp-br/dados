@@ -93,6 +93,54 @@ class Turma extends Model
         return false;
     }
 
+    public function calcNumMatriculados()
+    {
+        $semestre = $this->semestre;
+
+        if (!$semestre) {
+            $this->nummtr = 0;
+            return;
+        }
+
+        if ($this->nivel === 'Pós Graduação') {
+            // O codtur das turmas de pós é montado como ano + periodo + numofe (zero-padded à direita).
+            $numofe = ltrim(substr((string) $this->codtur, 5), '0') ?: '0';
+            $mesmin = $semestre->periodo == 1 ? 1 : 7;
+            $mesmax = $semestre->periodo == 1 ? 6 : 12;
+
+            $query  = " SELECT COUNT(DISTINCT M.codpes) AS TOTAL";
+            $query .= " FROM R41PGMMATTUR AS M";
+            $query .= " JOIN OFERECIMENTO AS O ON O.sgldis = M.sgldis AND O.numseqdis = M.numseqdis AND O.numofe = M.numofe";
+            $query .= " WHERE M.sgldis = :sgldis";
+            $query .= " AND M.numofe = :numofe";
+            $query .= " AND M.stamtrpgmofe IN ('P', 'A', 'D')";
+            $query .= " AND YEAR(O.dtainiofe) = :ano";
+            $query .= " AND MONTH(O.dtainiofe) BETWEEN :mesmin AND :mesmax";
+            $param = [
+                'sgldis'  => $this->coddis,
+                'numofe'  => $numofe,
+                'ano'     => $semestre->ano,
+                'mesmin'  => $mesmin,
+                'mesmax'  => $mesmax,
+            ];
+        } else {
+            $query  = " SELECT (T.nummtr + T.nummtrturcpl + T.nummtropt + T.nummtrecr + T.nummtroptlre) AS TOTAL";
+            $query .= " FROM TURMAGR AS T";
+            $query .= " WHERE T.coddis = :coddis";
+            $query .= " AND T.codtur = :codtur";
+            $query .= " AND T.verdis = (SELECT MAX(T2.verdis) FROM TURMAGR T2 WHERE T2.coddis = T.coddis AND T2.codtur = T.codtur)";
+            $param = [
+                'coddis' => $this->coddis,
+                'codtur' => $this->codtur,
+            ];
+        }
+
+        $res = DB::fetchAll($query, $param);
+
+        $total = $res && isset($res[0]['TOTAL']) ? $res[0]['TOTAL'] : null;
+        $this->nummtr = $total !== null ? (int) $total : 0;
+    }
+
     public function rastrearCriarDobradinhas()
     {
         $conflitos = [];
