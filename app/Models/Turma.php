@@ -21,6 +21,7 @@ class Turma extends Model
         'nomdis',
         'coddis',
         'nummtr',
+        'estmtr',
         'creaul',
         'cretrb',
         'dtainiaul',
@@ -139,6 +140,55 @@ class Turma extends Model
 
         $total = $res && isset($res[0]['TOTAL']) ? $res[0]['TOTAL'] : null;
         $this->nummtr = $total !== null ? (int) $total : 0;
+    }
+
+    public function calcEstimativaInscritos()
+    {
+        $semestre = $this->semestre;
+
+        if (!$semestre) {
+            $this->estmtr = 0;
+            return;
+        }
+
+        if ($this->nivel === 'Pós Graduação') {
+            // Para pós, a estimativa de inscritos é a mesma contagem de matriculados
+            // (COUNT(DISTINCT codpes) em R41PGMMATTUR com stamtrpgmofe ativo).
+            $numofe = ltrim(substr((string) $this->codtur, 5), '0') ?: '0';
+            $mesmin = $semestre->periodo == 1 ? 1 : 7;
+            $mesmax = $semestre->periodo == 1 ? 6 : 12;
+
+            $query  = " SELECT COUNT(DISTINCT M.codpes) AS TOTAL";
+            $query .= " FROM R41PGMMATTUR AS M";
+            $query .= " JOIN OFERECIMENTO AS O ON O.sgldis = M.sgldis AND O.numseqdis = M.numseqdis AND O.numofe = M.numofe";
+            $query .= " WHERE M.sgldis = :sgldis";
+            $query .= " AND M.numofe = :numofe";
+            $query .= " AND M.stamtrpgmofe IN ('P', 'A', 'D')";
+            $query .= " AND YEAR(O.dtainiofe) = :ano";
+            $query .= " AND MONTH(O.dtainiofe) BETWEEN :mesmin AND :mesmax";
+            $param = [
+                'sgldis'  => $this->coddis,
+                'numofe'  => $numofe,
+                'ano'     => $semestre->ano,
+                'mesmin'  => $mesmin,
+                'mesmax'  => $mesmax,
+            ];
+        } else {
+            $query  = " SELECT (T.numins + T.numinscpl + T.numinsopt + T.numinsecr + T.numinsoptlre) AS TOTAL";
+            $query .= " FROM TURMAGR AS T";
+            $query .= " WHERE T.coddis = :coddis";
+            $query .= " AND T.codtur = :codtur";
+            $query .= " AND T.verdis = (SELECT MAX(T2.verdis) FROM TURMAGR T2 WHERE T2.coddis = T.coddis AND T2.codtur = T.codtur)";
+            $param = [
+                'coddis' => $this->coddis,
+                'codtur' => $this->codtur,
+            ];
+        }
+
+        $res = DB::fetchAll($query, $param);
+
+        $total = $res && isset($res[0]['TOTAL']) ? $res[0]['TOTAL'] : null;
+        $this->estmtr = $total !== null ? (int) $total : 0;
     }
 
     public function rastrearCriarDobradinhas()

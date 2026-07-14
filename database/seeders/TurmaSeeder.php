@@ -49,7 +49,7 @@ class TurmaSeeder extends Seeder
 
             $turmasBruto = array_merge($ccm, DB::fetchAll($query, $param));
             
-            $query = " select T.coddis, D.nomdis, T.codtur, FORMAT(T.dtainitur, 'dd/MM/yyyy') as dtainiaul, FORMAT(T.dtafimtur , 'dd/MM/yyyy') as dtafimaul, D.creaul, D.cretrb, (T.nummtr+T.nummtrturcpl+T.nummtropt+T.nummtrecr+T.nummtroptlre) as nummtr";
+            $query = " select T.coddis, D.nomdis, T.codtur, FORMAT(T.dtainitur, 'dd/MM/yyyy') as dtainiaul, FORMAT(T.dtafimtur , 'dd/MM/yyyy') as dtafimaul, D.creaul, D.cretrb, (T.nummtr+T.nummtrturcpl+T.nummtropt+T.nummtrecr+T.nummtroptlre) as nummtr, (T.numins+T.numinscpl+T.numinsopt+T.numinsecr+T.numinsoptlre) as estmtr";
             $query .= " from TURMAGR as T";
             $query .= " JOIN DISCIPLINAGR AS D ON T.coddis = D.coddis AND T.verdis = D.verdis";
             $query .= " JOIN ( VALUES ";
@@ -79,6 +79,7 @@ class TurmaSeeder extends Seeder
                         "creaul" => $t["creaul"],
                         "cretrb" => $t["cretrb"],
                         "nummtr" => $t["nummtr"],
+                        "estmtr" => $t["estmtr"],
                         "nivel" => "Graduação",
                         "semestre_id"=>$semestre->id,
                 ]);
@@ -188,7 +189,7 @@ class TurmaSeeder extends Seeder
             $turmasBruto = array_merge($ibi, DB::fetchAll($query, $param));
 
             foreach($turmasBruto as $tb){
-                $query = " select P.nompes, V.codpes, V.codset, O.sgldis as coddis, D.nomdis, O.numofe, FORMAT(O.dtainiofe, 'dd/MM/yyyy') as dtainiaul, FORMAT(O.dtafimofe, 'dd/MM/yyyy') as dtafimaul, D.cgahorteodis as creaul, D.cgahorpradis as cretrb, D.cgahordis, D.numcretotdis, ET.diasmnofe as diasmnocp, ET.horiniofe as horent, ET.horfimofe as horsai, count(*) as nummtr";
+                $query = " select P.nompes, V.codpes, V.codset, O.sgldis as coddis, D.nomdis, O.numofe, FORMAT(O.dtainiofe, 'dd/MM/yyyy') as dtainiaul, FORMAT(O.dtafimofe, 'dd/MM/yyyy') as dtafimaul, D.cgahorteodis as creaul, D.cgahorpradis as cretrb, D.cgahordis, D.numcretotdis, ET.diasmnofe as diasmnocp, ET.horiniofe as horent, ET.horfimofe as horsai, (SELECT COUNT(DISTINCT M2.codpes) FROM R41PGMMATTUR AS M2 WHERE M2.sgldis = O.sgldis AND M2.numseqdis = O.numseqdis AND M2.numofe = O.numofe AND M2.stamtrpgmofe IN ('P', 'A', 'D')) as nummtr";
                 $query .= " from OFERECIMENTO as O, DISCIPLINA as D, R41PGMMATTUR as R41, ESPACOTURMA as ET, VINCULOPESSOAUSP as V, PESSOA as P, R32TURMINDOC as R32";
                 $query .= " where O.sgldis = :sgldis";
                 $query .= " and O.numseqdis = :numseqdis";
@@ -210,7 +211,7 @@ class TurmaSeeder extends Seeder
                 $query .= " and V.codpes = R32.codpes";
                 $query .= " and V.tipfnc = :tipfnc";
                 $query .= " and P.codpes = V.codpes";
-                $query .= " group by P.nompes, V.codpes, V.codset, D.nomdis, O.sgldis, O.numofe, O.dtainiofe, O.dtafimofe, D.cgahorteodis, D.cgahorpradis, D.cgahordis, D.numcretotdis, ET.diasmnofe, ET.horiniofe, ET.horfimofe";
+                $query .= " group by P.nompes, V.codpes, V.codset, D.nomdis, O.sgldis, O.numseqdis, O.numofe, O.dtainiofe, O.dtafimofe, D.cgahorteodis, D.cgahorpradis, D.cgahordis, D.numcretotdis, ET.diasmnofe, ET.horiniofe, ET.horfimofe";
                 $param = [
                     'sgldis' => $tb['sgldis'],
                     'numseqdis' => $tb['numseqdis'],
@@ -237,6 +238,7 @@ class TurmaSeeder extends Seeder
                             "creaul" => $r["creaul"],
                             "cretrb" => $r["cretrb"],
                             "nummtr" => $r["nummtr"],
+                            "estmtr" => $r["nummtr"],
                             "nivel" => "Pós Graduação",
                             "semestre_id"=>$semestre->id,
                     ]);

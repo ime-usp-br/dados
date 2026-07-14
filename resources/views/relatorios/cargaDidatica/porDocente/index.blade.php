@@ -22,6 +22,7 @@
                             <th class="text-center" rowspan="2" style="vertical-align: middle;">Semestre</th>
                             <th class="text-center" colspan="2" style="vertical-align: middle;">Créditos</th>
                             <th class="text-center" rowspan="2" style="vertical-align: middle;">Alunos matriculados</th>
+                            <th class="text-center" rowspan="2" style="vertical-align: middle;">Alunos inscritos</th>
                             <th class="text-center" rowspan="2" style="vertical-align: middle;">Horário</th>
                             <th class="text-center" rowspan="2" style="vertical-align: middle;">Nível</th>
                             <th class="text-center" rowspan="2" style="vertical-align: middle;">Histórico de alunos <br>matriculados nos cinco<br> períodos anteriores</th>
@@ -44,6 +45,7 @@
                                     <td class="text-center" style="vertical-align: middle;">{{ $turma->creaul }}</td>
                                     <td class="text-center" style="vertical-align: middle;">{{ $turma->cretrb }}</td>
                                     <td class="text-center" style="vertical-align: middle;">{{ $turma->nummtr }}</td>
+                                    <td class="text-center" style="vertical-align: middle;">{{ $turma->estmtr }}</td>
                                     <td class="text-center" style="vertical-align: middle;white-space: nowrap;">
                                         @foreach($turma->horarios->sortBy([
                                             function ($a, $b) {

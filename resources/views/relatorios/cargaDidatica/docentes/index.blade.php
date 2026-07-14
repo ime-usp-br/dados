@@ -21,7 +21,7 @@
                         <table id="table_id" class="table table-bordered" style="font-size:12px;">
                             <thead>
                                 <tr class="text-center">
-                                    <th colspan="10">Graduação</th>
+                                    <th colspan="11">Graduação</th>
                                 </tr>
                                 <tr>
                                     <th class="text-center" rowspan="2" style="vertical-align: middle;">Sigla da Disciplina</th>
@@ -31,6 +31,7 @@
                                     <th class="text-center" rowspan="2" style="vertical-align: middle;">Fim</th>
                                     <th class="text-center" rowspan="2" style="vertical-align: middle;">Turma</th>
                                     <th class="text-center" rowspan="2" style="vertical-align: middle;">Alunos matriculados</th>
+                                    <th class="text-center" rowspan="2" style="vertical-align: middle;">Alunos inscritos</th>
                                     <th class="text-center" rowspan="2" style="vertical-align: middle;">Horário</th>
                                 </tr>
                                 <tr class="text-center">
@@ -54,6 +55,7 @@
                                             @endif
                                                 <td class="text-center" style="vertical-align: middle;">{{ $codtur }}</td>
                                                 <td class="text-center" style="vertical-align: middle;"><span>&#8776;</span>{{ $turma["nummtr"] }}</td>
+                                                <td class="text-center" style="vertical-align: middle;"><span>&#8776;</span>{{ $turma["estmtr"] }}</td>
                                                 <td class="text-center" style="vertical-align: middle;">
                                                     @foreach($turma["horarios"] as $horario)
                                                         {{ $horario["diasmnocp"]." ".$horario["horent"]." ".$horario["horsai"] }}<br>
@@ -75,7 +77,7 @@
                         <table id="table_id" class="table table-bordered" style="font-size:12px;">
                             <thead>
                                 <tr class="text-center">
-                                    <th colspan="10">Pós Graduação</th>
+                                    <th colspan="11">Pós Graduação</th>
                                 </tr>
                                 <tr>
                                     <th class="text-center" rowspan="2" style="vertical-align: middle;">Sigla da Disciplina</th>
@@ -85,6 +87,7 @@
                                     <th class="text-center" rowspan="2" style="vertical-align: middle;">Inicio</th>
                                     <th class="text-center" rowspan="2" style="vertical-align: middle;">Fim</th>
                                     <th class="text-center" rowspan="2" style="vertical-align: middle;">Alunos matriculados</th>
+                                    <th class="text-center" rowspan="2" style="vertical-align: middle;">Alunos inscritos</th>
                                     <th class="text-center" rowspan="2" style="vertical-align: middle;">Horário</th>
                                 </tr>
                                 <tr class="text-center">
@@ -103,6 +106,7 @@
                                         <td class="text-center" style="vertical-align: middle;">{{ $disciplina["dtainiaul"] }}</td>
                                         <td class="text-center" style="vertical-align: middle;">{{ $disciplina["dtafimaul"] }}</td>
                                         <td class="text-center" style="vertical-align: middle;"><span>&#8776;</span>{{ $disciplina["nummtr"] }}</td>
+                                        <td class="text-center" style="vertical-align: middle;"><span>&#8776;</span>{{ $disciplina["estmtr"] }}</td>
                                         <td class="text-center" style="vertical-align: middle;">
                                             @foreach($disciplina["horarios"] as $horario)
                                                 {{ $horario["diasmnocp"]." ".$horario["horent"]." ".$horario["horsai"] }}<br>

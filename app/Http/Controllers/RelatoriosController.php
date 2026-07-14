@@ -41,7 +41,7 @@ class RelatoriosController extends Controller
             $codigoSetores = ["MAC"=>1664, "MAE"=>1665, "MAP"=>1666, "MAT"=>1667];
             $semestre = Semestre::firstOrCreate(["ano"=>$validated["ano"],"periodo"=>$validated["semestre"]]);
 
-            $query = " select distinct P.nompes, V.codpes, V.codset, M.coddis, D.nomdis, M.codtur, FORMAT(M.dtainiaul, 'dd/MM/yyyy') as dtainiaul, FORMAT(M.dtafimaul, 'dd/MM/yyyy') as dtafimaul, D.creaul, D.cretrb, (T.nummtr+T.nummtrturcpl+T.nummtropt+T.nummtrecr) as nummtr,M.diasmnocp, H.horent, H.horsai";
+            $query = " select distinct P.nompes, V.codpes, V.codset, M.coddis, D.nomdis, M.codtur, FORMAT(M.dtainiaul, 'dd/MM/yyyy') as dtainiaul, FORMAT(M.dtafimaul, 'dd/MM/yyyy') as dtafimaul, D.creaul, D.cretrb, (T.nummtr+T.nummtrturcpl+T.nummtropt+T.nummtrecr) as nummtr, (T.numins+T.numinscpl+T.numinsopt+T.numinsecr+T.numinsoptlre) as estmtr,M.diasmnocp, H.horent, H.horsai";
             $query .= " from VINCULOPESSOAUSP as V, PESSOA as P, MINISTRANTE as M, DISCIPLINAGR as D, TURMAGR as T, PERIODOHORARIO as H";
             $query .= " where V.codund = :codund";
             $query .= " and V.codset = :codset";
@@ -73,6 +73,7 @@ class RelatoriosController extends Controller
                 $dadosGraduação[$resposta["nompes"]." (".$resposta["codpes"].")"]["disciplinas"][$resposta["coddis"]]["dtainiaul"] = $resposta["dtainiaul"];
                 $dadosGraduação[$resposta["nompes"]." (".$resposta["codpes"].")"]["disciplinas"][$resposta["coddis"]]["dtafimaul"] = $resposta["dtafimaul"];
                 $dadosGraduação[$resposta["nompes"]." (".$resposta["codpes"].")"]["disciplinas"][$resposta["coddis"]]["turmas"][$resposta["codtur"]]["nummtr"] = $resposta["nummtr"];
+                $dadosGraduação[$resposta["nompes"]." (".$resposta["codpes"].")"]["disciplinas"][$resposta["coddis"]]["turmas"][$resposta["codtur"]]["estmtr"] = $resposta["estmtr"];
                 $dadosGraduação[$resposta["nompes"]." (".$resposta["codpes"].")"]["disciplinas"][$resposta["coddis"]]["turmas"][$resposta["codtur"]]["horarios"][] = [
                     "diasmnocp"=>$resposta["diasmnocp"],
                     "horent"=>$resposta["horent"],
@@ -80,7 +81,7 @@ class RelatoriosController extends Controller
                 ];
             }
 
-            $query = " select P.nompes, V.codpes, V.codset, R32.sgldis as coddis, D.nomdis, FORMAT(O.dtainiofe, 'dd/MM/yyyy') as dtainiaul, FORMAT(O.dtafimofe, 'dd/MM/yyyy') as dtafimaul, D.cgahorteodis as creaul, D.cgahorpradis as cretrb, D.cgahordis, D.numcretotdis, ET.diasmnofe as diasmnocp, ET.horiniofe as horent, ET.horfimofe as horsai, count(*) as nummtr";
+            $query = " select P.nompes, V.codpes, V.codset, R32.sgldis as coddis, D.nomdis, FORMAT(O.dtainiofe, 'dd/MM/yyyy') as dtainiaul, FORMAT(O.dtafimofe, 'dd/MM/yyyy') as dtafimaul, D.cgahorteodis as creaul, D.cgahorpradis as cretrb, D.cgahordis, D.numcretotdis, ET.diasmnofe as diasmnocp, ET.horiniofe as horent, ET.horfimofe as horsai, (SELECT COUNT(DISTINCT M2.codpes) FROM R41PGMMATTUR AS M2 WHERE M2.sgldis = R32.sgldis AND M2.numseqdis = O.numseqdis AND M2.numofe = O.numofe AND M2.stamtrpgmofe IN ('P', 'A', 'D')) as nummtr";
             $query .= " from VINCULOPESSOAUSP as V, PESSOA as P, DISCIPLINA as D, R32TURMINDOC as R32, OFERECIMENTO as O, R41PGMMATTUR as R41, ESPACOTURMA as ET";
             $query .= " where V.codund = :codund";
             $query .= " and V.tipfnc = 'Docente'";
@@ -101,7 +102,7 @@ class RelatoriosController extends Controller
             $query .= " and ET.sgldis = R32.sgldis";
             $query .= " and ET.numseqdis = R32.numseqdis";
             $query .= " and ET.numofe = R32.numofe";
-            $query .= " group by P.nompes, V.codpes, V.codset, D.nomdis, R32.sgldis, O.dtainiofe, O.dtafimofe, D.cgahorteodis, D.cgahorpradis, D.cgahordis, D.numcretotdis, ET.diasmnofe, ET.horiniofe, ET.horfimofe";
+            $query .= " group by P.nompes, V.codpes, V.codset, D.nomdis, R32.sgldis, O.numseqdis, O.numofe, O.dtainiofe, O.dtafimofe, D.cgahorteodis, D.cgahorpradis, D.cgahordis, D.numcretotdis, ET.diasmnofe, ET.horiniofe, ET.horfimofe";
             $param = [
                 'codund' => '45',
                 'codset' => $codigoSetores[$validated["departamento"]],
@@ -124,6 +125,7 @@ class RelatoriosController extends Controller
                 $dadosPos[$resposta["nompes"]." (".$resposta["codpes"].")"]["disciplinas"][$resposta["coddis"]]["dtainiaul"] = $resposta["dtainiaul"];
                 $dadosPos[$resposta["nompes"]." (".$resposta["codpes"].")"]["disciplinas"][$resposta["coddis"]]["dtafimaul"] = $resposta["dtafimaul"];
                 $dadosPos[$resposta["nompes"]." (".$resposta["codpes"].")"]["disciplinas"][$resposta["coddis"]]["nummtr"] = $resposta["nummtr"];
+                $dadosPos[$resposta["nompes"]." (".$resposta["codpes"].")"]["disciplinas"][$resposta["coddis"]]["estmtr"] = $resposta["nummtr"];
                 $dadosPos[$resposta["nompes"]." (".$resposta["codpes"].")"]["disciplinas"][$resposta["coddis"]]["horarios"][] = [
                     "diasmnocp"=>$dias[$resposta["diasmnocp"]],
                     "horent"=>substr_replace($resposta["horent"], ":", 2, 0),
